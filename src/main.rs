@@ -1,4 +1,6 @@
+use user_pos_nyc::App;
+
 fn main()
 {
-    println!("Hello, world!");
+    yew::Renderer::<App>::new().render();
 }
