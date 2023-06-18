@@ -1,5 +1,7 @@
 {
-	{"name": "Greene Food Deli", "uid": "3dQYP5XMob0CHSc6OO1o"},
-	{"name": "Greene Valley Market", "uid": "eMLuzqOOo6lu5vW6nTJq"},
-	{"name": "Franklin Convenience", "uid": "chChrx8dKN8XHv60z6N6"}
+	"data": [
+		{"name": "Greene Food Deli", "uid": "3dQYP5XMob0CHSc6OO1o"},
+		{"name": "Greene Valley Market", "uid": "eMLuzqOOo6lu5vW6nTJq"},
+		{"name": "Franklin Convenience", "uid": "chChrx8dKN8XHv60z6N6"}
+	]
 }
