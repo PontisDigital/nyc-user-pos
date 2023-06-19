@@ -8,7 +8,28 @@ pub fn PhoneInput() -> Html
 {
 	let stylesheet = style!(r#"
 
-		"#).unwrap();
+	input {
+		display: block;
+		margin: 2em auto;
+		border: none;
+		padding: 16px;
+		width: calc((14 * 1ch) + (13 * 0.5ch)); /* Adjusted width for 14 characters */
+		background: repeating-linear-gradient(90deg,
+			dimgrey 0, dimgrey 1ch,
+			transparent 0, transparent 0.5ch)
+			0 100%/calc((14 * 1ch) + (14 * 0.5ch) - 0.5ch) 2px no-repeat;
+		font: 5ch Bai Jamjuree, consolas, monospace;
+		letter-spacing: 0.5ch;
+		text-align: center;
+		color: #9991ef;
+	}
+
+	input:focus {
+		outline: none;
+	}
+
+
+	"#).unwrap();
 
 	let oninput = Callback::from(|event: InputEvent|
 		{
