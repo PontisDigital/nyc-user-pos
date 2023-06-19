@@ -1,8 +1,11 @@
-use std::{collections::HashMap, borrow::Borrow};
+use std::collections::HashMap;
 
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
+use stylist::{yew::styled_component, style};
 use yew::prelude::*;
+
+use crate::components::button::Button;
 
 #[derive(Properties, PartialEq)]
 pub struct Properties
@@ -17,14 +20,18 @@ pub struct Merchant
 	pub name: String,
 }
 
-#[function_component]
+#[styled_component]
 pub fn UserPOS(props: &Properties) -> Html
 {
+	let stylesheet = style!(r#"
+		font-family: 'Bai Jamjuree', sans-serif;
+		text-align: center;
+		"#).unwrap();
 	let has_loaded = use_state(|| false);
-	let state = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
+	let current_merchant = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
 	let uid = props.id.clone();
 	let callback = {
-		let state = state.clone();
+		let state = current_merchant.clone();
 		Callback::from(move |merchant: Merchant| state.set(merchant))
 	};
 
@@ -41,34 +48,30 @@ pub fn UserPOS(props: &Properties) -> Html
 					.unwrap();
 				let merchant = Merchant
 				{
-					uid: uid.clone(),
 					name: merchant_map.get(&uid).unwrap().name.clone(),
+					uid,
 				};
 				callback.emit(merchant);
 			});
 		has_loaded.set(true);
 	}
 
-	let merchant_name = state.borrow().name.clone();
-	if merchant_name == "Loading..."
+	let merchant_name = &current_merchant.name;
+
+	html!
 	{
-		html!
-		{
-			<div class="user-pos">
-				<h1>{ "Loading..." }</h1>
-				<h2>{ "Loading..." }</h2>
-			</div>
-		}
-	}
-	else
-	{
-		html!
-		{
-			<div class="user-pos">
+		<div class={stylesheet}>
+			if merchant_name != "Loading..."
+			{
 				<h1>{ format!("Welcome to {}", merchant_name)}</h1>
 				<h2>{ "User POS" }</h2>
-			</div>
-		}
+				<Button />
+			}
+			else
+			{
+				<h1>{ "Loading..." }</h1>
+			}
+		</div>
 	}
 }
 
