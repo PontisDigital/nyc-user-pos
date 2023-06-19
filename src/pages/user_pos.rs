@@ -20,6 +20,7 @@ pub struct Merchant
 #[function_component]
 pub fn UserPOS(props: &Properties) -> Html
 {
+	let has_loaded = use_state(|| false);
 	let state = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
 	let uid = props.id.clone();
 	let callback = {
@@ -27,23 +28,26 @@ pub fn UserPOS(props: &Properties) -> Html
 		Callback::from(move |merchant: Merchant| state.set(merchant))
 	};
 
-	wasm_bindgen_futures::spawn_local(async move
-		{
-			let merchant_map = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
-				.send()
-				.await
-				.unwrap()
-				.json::<HashMap<String, Merchant>>()
-				.await
-				.unwrap();
-			let merchant = Merchant
+	if !(*has_loaded)
+	{
+		wasm_bindgen_futures::spawn_local(async move
 			{
-				uid: uid.clone(),
-				name: merchant_map.get(&uid).unwrap().name.clone(),
-			};
-			callback.emit(merchant);
-		});
-
+				let merchant_map = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
+					.send()
+					.await
+					.unwrap()
+					.json::<HashMap<String, Merchant>>()
+					.await
+					.unwrap();
+				let merchant = Merchant
+				{
+					uid: uid.clone(),
+					name: merchant_map.get(&uid).unwrap().name.clone(),
+				};
+				callback.emit(merchant);
+			});
+		has_loaded.set(true);
+	}
 
 	let merchant_name = state.borrow().name.clone();
 	if merchant_name == "Loading..."
