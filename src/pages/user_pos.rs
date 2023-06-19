@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 
-use crate::components::button::Button;
+use crate::components::user_pos_form::UserPOSForm;
 
 #[derive(Properties, PartialEq)]
 pub struct Properties
@@ -24,9 +24,11 @@ pub struct Merchant
 pub fn UserPOS(props: &Properties) -> Html
 {
 	let stylesheet = style!(r#"
+
 		font-family: 'Bai Jamjuree', sans-serif;
 		text-align: center;
-		"#).unwrap();
+
+	"#).unwrap();
 
 	let has_loaded = use_state(|| false);
 	let merchant = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
@@ -48,8 +50,7 @@ pub fn UserPOS(props: &Properties) -> Html
 			if merchant.name != "Loading..."
 			{
 				<h1>{ format!("Welcome to {}", merchant.name)}</h1>
-				<h2>{ "User POS" }</h2>
-				<Button />
+				<UserPOSForm />
 			}
 			else
 			{
