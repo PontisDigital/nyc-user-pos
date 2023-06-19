@@ -27,43 +27,27 @@ pub fn UserPOS(props: &Properties) -> Html
 		font-family: 'Bai Jamjuree', sans-serif;
 		text-align: center;
 		"#).unwrap();
+
 	let has_loaded = use_state(|| false);
-	let current_merchant = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
+	let merchant = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
 	let uid = props.id.clone();
 	let callback = {
-		let state = current_merchant.clone();
+		let state = merchant.clone();
 		Callback::from(move |merchant: Merchant| state.set(merchant))
 	};
 
 	if !(*has_loaded)
 	{
-		wasm_bindgen_futures::spawn_local(async move
-			{
-				let merchant_map = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
-					.send()
-					.await
-					.unwrap()
-					.json::<HashMap<String, Merchant>>()
-					.await
-					.unwrap();
-				let merchant = Merchant
-				{
-					name: merchant_map.get(&uid).unwrap().name.clone(),
-					uid,
-				};
-				callback.emit(merchant);
-			});
+		get_merchant_map(uid, callback);
 		has_loaded.set(true);
 	}
-
-	let merchant_name = &current_merchant.name;
 
 	html!
 	{
 		<div class={stylesheet}>
-			if merchant_name != "Loading..."
+			if merchant.name != "Loading..."
 			{
-				<h1>{ format!("Welcome to {}", merchant_name)}</h1>
+				<h1>{ format!("Welcome to {}", merchant.name)}</h1>
 				<h2>{ "User POS" }</h2>
 				<Button />
 			}
@@ -73,5 +57,31 @@ pub fn UserPOS(props: &Properties) -> Html
 			}
 		</div>
 	}
+}
+
+fn get_merchant_map(uid: String, callback: Callback<Merchant>)
+{
+	wasm_bindgen_futures::spawn_local(async move
+		{
+			let name = get_merchant_name(uid.clone()).await;
+			let merchant = Merchant
+			{
+				name,
+				uid,
+			};
+			callback.emit(merchant);
+		});
+}
+
+async fn get_merchant_name(uid: String) -> String
+{
+	let merchant_map = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
+		.send()
+		.await
+		.unwrap()
+		.json::<HashMap<String, Merchant>>()
+		.await
+		.unwrap();
+	merchant_map.get(&uid).unwrap().name.clone()
 }
 
