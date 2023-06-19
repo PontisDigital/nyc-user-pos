@@ -3,8 +3,14 @@ use yew::prelude::*;
 use wasm_bindgen::JsCast;
 use web_sys::HtmlInputElement;
 
+#[derive(Properties, PartialEq)]
+pub struct Props
+{
+	pub onchange: Callback<String>
+}
+
 #[styled_component]
-pub fn PhoneInput() -> Html
+pub fn PhoneInput(props: &Props) -> Html
 {
 	let stylesheet = style!(r#"
 
@@ -41,10 +47,22 @@ pub fn PhoneInput() -> Html
 			input_field.set_value(&format_phone_number(value.as_str()));
 		});
 
+	let input_callback = props.onchange.clone();
+
+	let onchange = Callback::from(move |event: Event|
+		{
+			let value = event
+				.target()
+				.unwrap()
+				.unchecked_into::<HtmlInputElement>()
+				.value();
+			input_callback.emit(value);
+		});
+
 	html!
 	{
 		<div class = {stylesheet}>
-			<input type="tel" oninput={oninput} id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="(123)-456-7890" required=true />
+			<input type="tel" onchange={onchange} oninput={oninput} id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="(123)-456-7890" required=true />
 		</div>
 	}
 }
