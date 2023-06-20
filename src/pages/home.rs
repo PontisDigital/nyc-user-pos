@@ -16,13 +16,24 @@ pub fn Home() -> Html
                 width: 425px;
                 height: auto;
             }
+            @media (max-width: 1024px) {
+                & img {
+                    width: 1000px;
+                    height: auto;
+                }
+            }
+            @media (max-width: 480px) {
+                & img {
+                    width: 300px;
+                    height: auto;
+                }
+            }
         "#
         ).unwrap();
 
     let stylesheet = style!(
         r#"
             color: white;
-            font-size: 18px;
             text-align: center;
             font-family: Bai Jamjuree, Courier, monospace;
             letter-spacing: 0.1em;
@@ -31,15 +42,22 @@ pub fn Home() -> Html
             top: 50%;
             -webkit-transform: translate(-50%, -50%);
             transform: translate(-50%, -50%);
-            & h2 {
-                font-size: 20px;
+            @media (min-width: 1024px) {
+                & h2 {
+                    font-size: 20px;
+                }
+                & p {
+                    font-size: 18px;
+                    font-weight: 400;
+                    margin: 0;
+                    padding: 0;
+                    letter-spacing: 0.1em;
+                }
             }
-            & p {
-                font-size: 18px;
-                font-weight: 400;
-                margin: 0;
-                padding: 0;
-                letter-spacing: 0.1em;
+            @media (max-width: 1024px) {
+                & h2 {
+                    font-size: 72px;
+                }
             }
         "#
         ).unwrap();
@@ -65,6 +83,15 @@ pub fn Home() -> Html
                 margin: 0;
                 padding: 0;
                 letter-spacing: 0.1em;
+            }
+            @media (max-width: 1024px) {
+                & p {
+                    font-size: 40px;
+                    font-weight: 400;
+                    margin: 0;
+                    padding: 0;
+                    letter-spacing: 0.1em;
+                }
             }
         "#
         ).unwrap();
