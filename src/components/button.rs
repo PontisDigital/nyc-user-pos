@@ -1,14 +1,8 @@
 use yew::prelude::*;
 use stylist::{yew::styled_component, style};
 
-#[derive(Properties, PartialEq)]
-pub struct Props
-{
-    pub onsubmit: Callback<MouseEvent>,
-}
-
 #[styled_component]
-pub fn Button(props: &Props) -> Html
+pub fn Button() -> Html
 {
     let stylesheet = style!
     {
@@ -75,7 +69,7 @@ touch-action: manipulation;
 
     html!
     {
-        <button class={stylesheet} onclick={&props.onsubmit}>{"Submit"}</button>
+        <button class={stylesheet}>{"Submit"}</button>
     }
 }
 

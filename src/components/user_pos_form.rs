@@ -1,13 +1,13 @@
 use gloo::{console::log, net::http::Request};
 use serde_json::json;
-use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use crate::components::{phone_number_input::PhoneInput, button::Button};
+use stylist::{yew::styled_component, style, Style};
 
 #[styled_component]
 pub fn UserPOSForm() -> Html
 {
-    let stylesheet = style!(r#"
+    let stylesheet: Style = style!(r#"
 
         box-sizing: border-box;
         padding: 48px;
@@ -24,7 +24,7 @@ pub fn UserPOSForm() -> Html
         });
 
     let state = input_state.clone();
-    let onsubmit = Callback::from(move |event: MouseEvent|
+    let onsubmit = Callback::from(move |event: SubmitEvent|
         {
             event.prevent_default();
             log!(format!("submitted {}", *state));
@@ -49,8 +49,10 @@ pub fn UserPOSForm() -> Html
     html!
     {
         <div class = {stylesheet}>
-            <PhoneInput onchange={onchange}/>
-            <Button onsubmit={onsubmit}/>
+            <form onsubmit={onsubmit}>
+                <PhoneInput onchange={onchange}/>
+                <Button />
+            </form>
         </div>
     }
 }

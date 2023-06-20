@@ -1,3 +1,4 @@
+use gloo::console::log;
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use wasm_bindgen::JsCast;
@@ -49,6 +50,15 @@ pub fn PhoneInput(props: &Props) -> Html
 
 	let input_callback = props.onchange.clone();
 
+	let oninvalid = Callback::from(|event: Event|
+		{
+			let input_field = event
+				.target()
+				.unwrap()
+				.unchecked_into::<HtmlInputElement>();
+			log!(format!("Invalid input: {}", input_field.value()));
+		});
+
 	let onchange = Callback::from(move |event: Event|
 		{
 			let value = event
@@ -57,12 +67,23 @@ pub fn PhoneInput(props: &Props) -> Html
 				.unchecked_into::<HtmlInputElement>()
 				.value();
 			input_callback.emit(value);
+
 		});
 
 	html!
 	{
 		<div class = {stylesheet}>
-			<input type="tel" onchange={onchange} oninput={oninput} id="phone" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="(123)-456-7890" required=true />
+			<input type="tel"
+				onchange={onchange}
+				oninput={oninput}
+				oninvalid={oninvalid}
+				id="phone"
+				name="phone"
+				pattern="\\(\\d{3}\\)-\\d{3}-\\d{4}"
+				placeholder="(123)-456-7890"
+				required=true
+				title="Please enter a valid phone number"
+				/>
 		</div>
 	}
 }
