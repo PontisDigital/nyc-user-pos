@@ -4,6 +4,21 @@ use yew::prelude::*;
 #[styled_component]
 pub fn Home() -> Html
 {
+    let thing_at_top = style!(
+        r#"
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            opacity: 0.25;
+            & img {
+                width: 425px;
+                height: auto;
+            }
+        "#
+        ).unwrap();
+
     let stylesheet = style!(
         r#"
             color: white;
@@ -57,6 +72,9 @@ pub fn Home() -> Html
     html!
     {
         <>
+            <div class={thing_at_top}>
+                <img src="img/logo.png" alt="logo"/> 
+            </div>
             <div class={stylesheet}>
                 <h2>{ "GREENE FOOD DELI" }</h2>
                 <h2>{ "GREENE MARKET DELI" }</h2>
