@@ -24,7 +24,9 @@ pub fn UserPOSForm() -> Html
 	let stylesheet: Style = style!(r#"
 
 		box-sizing: border-box;
-		padding: 48px;
+		padding-left: 48px;
+		padding-right: 48px;
+		max-width: 100%;
 
 	"#).unwrap();
 
@@ -124,7 +126,6 @@ pub fn UserPOSForm() -> Html
 		<div class = {stylesheet}>
 		if !*code_sent_state
 		{
-			<h1>{"Please enter your phone number"}</h1>
 			<form onsubmit={onsubmit}>
 				<PhoneInput onchange={onchange}/>
 				<Button />

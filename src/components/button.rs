@@ -16,11 +16,11 @@ color: #fff;
 cursor: pointer;
 display: inline-block;
 font-family: Bai Jamjuree,sans-serif;
-font-size: 1.125rem;
+font-size: 1.5rem;
 font-weight: 700;
 letter-spacing: -.01em;
 line-height: 1.3;
-padding: 1rem 1.25rem;
+padding: 1rem 7rem;
 position: relative;
 text-align: left;
 text-decoration: none;
@@ -37,10 +37,16 @@ touch-action: manipulation;
 
 &:not(:disabled):hover {
   transform: scale(1.05);
+  @media (max-width: 1024px) {
+    transform: translateY(0rem) scale(3.05);
+  }
 }
 
 &:not(:disabled):hover:active {
   transform: scale(1.05) translateY(.125rem);
+  @media (max-width: 1024px) {
+    transform: translateY(.125rem) scale(3.05);
+  }
 }
 
 &:focus {
@@ -64,7 +70,20 @@ touch-action: manipulation;
 
 &:not(:disabled):active {
   transform: translateY(.125rem);
-}        "#
+  @media (max-width: 1024px) {
+    transform: translateY(3.125rem) scale(3);
+  }
+}
+
+@media (max-width: 1024px) {
+  font-size: 1rem;
+  padding: .75rem 5rem;
+  transform: translateZ(0) scale(3);
+  margin-top: 100px;
+}
+
+"#
+
     }.unwrap();
 
     html!
