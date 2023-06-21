@@ -138,6 +138,7 @@ pub fn UserPOSForm() -> Html
 				<h1>{"Enter the code we sent you"}</h1>
 				<form onsubmit={onsubmit}>
 					<CodeInput onchange={onchange}/>
+					<Button />
 				</form>
 			}
 			else
