@@ -4,6 +4,7 @@ use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
+use yewdux::prelude::*;
 
 use crate::components::user_pos_form::UserPOSForm;
 
@@ -20,9 +21,19 @@ pub struct Merchant
 	pub name: String,
 }
 
+
+#[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
+#[store(storage = "local", storage_tab_sync)]
+pub struct AuthState
+{
+	pub token: Option<String>,
+}
+
 #[styled_component]
 pub fn UserPOS(props: &Properties) -> Html
 {
+	let auth = use_store::<AuthState>().0;
+
 	let heading = style!(r#"
 
 		  display: flex;
@@ -100,6 +111,7 @@ pub fn UserPOS(props: &Properties) -> Html
 				<div class={heading}>
 					<h1>{format!("rainyday x {}", merchant.name)}</h1>
 				</div>
+				<h1>{format!("{:?}", auth)}</h1>
 				<div class={message}>
 					<h2>{ "one-time signup." }</h2>
 					<h2>{ "*10%* off everything forever." }</h2>

@@ -1,7 +1,8 @@
 use gloo::{console::log, net::http::Request};
 use serde_json::json;
 use yew::prelude::*;
-use crate::components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput};
+use yewdux::prelude::*;
+use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::AuthState};
 use stylist::{yew::styled_component, style, Style};
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -21,6 +22,8 @@ struct CodeVerifiedResponse
 #[styled_component]
 pub fn UserPOSForm() -> Html
 {
+	let dispatch = use_store::<AuthState>().1;
+
 	let stylesheet: Style = style!(r#"
 
 		box-sizing: border-box;
@@ -57,8 +60,10 @@ pub fn UserPOSForm() -> Html
 	let verify_response = use_state(|| CodeVerifiedResponse { verified: false, token: "".to_string() });
 	let verify_response_clone = verify_response.clone();
 
+	let dispatch = dispatch.clone();
 	let onsubmit = Callback::from(move |event: SubmitEvent|
 		{
+			let dispatch = dispatch.clone();
 			event.prevent_default();
 			let pistate = pistate.clone();
 			let cistate = cistate.clone();
@@ -110,7 +115,8 @@ pub fn UserPOSForm() -> Html
 							if vfied.verified
 							{
 								log!("verified");
-								log!(format!("token: {:?}", vfied));
+								log!(format!("{:?}", vfied));
+								dispatch.set(AuthState {token: Some(vfied.token)});
 							}
 						},
 						Err(_) =>
