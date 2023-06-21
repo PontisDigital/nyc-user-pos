@@ -15,38 +15,48 @@ pub fn CodeInput(props: &Props) -> Html
 {
 	let stylesheet = style!(r#"
 
-	input {
-		display: block;
-		margin: 2em auto;
-		border: none;
-		padding: 16px;
-		width: calc((14 * 1ch) + (13 * 0.5ch)); /* Adjusted width for 14 characters */
-		background: repeating-linear-gradient(90deg,
-			dimgrey 0, dimgrey 1ch,
-			transparent 0, transparent 0.5ch)
-			0 100%/calc((14 * 1ch) + (14 * 0.5ch) - 0.5ch) 2px no-repeat;
-		font: 5ch Bai Jamjuree, consolas, monospace;
-		letter-spacing: 0.5ch;
-		text-align: center;
-		color: #9991ef;
-	}
+		input[type="number"] {
+  width: 100%;
+  font-size: 5em;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #b3a8ff;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  display: block;
+  margin-top: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 0px;
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
 
-	input:focus {
-		outline: none;
-	}
+input[type="number"]:focus {
+  border-color: #000;
+  box-shadow: none;
+}
 
-	/* Chrome, Safari, Edge, Opera */
-	input::-webkit-outer-spin-button,
-	input::-webkit-inner-spin-button {
-	  -webkit-appearance: none;
-	  margin: 0;
-	}
+/* For mobile devices */
 
-	/* Firefox */
-	input[type=number] {
-	  -moz-appearance: textfield;
-	}
+@media (max-width: 1024px) {
+  input[type="number"] {
+    width: 100%;
+	font-size: 3em;
+  }
+}
 
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
 	"#).unwrap();
 
