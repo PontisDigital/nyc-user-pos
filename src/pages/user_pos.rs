@@ -5,33 +5,33 @@ use yew::prelude::*;
 use yewdux::prelude::*;
 use serde_json::json;
 
-use crate::components::user_pos_form::UserPOSForm;
+use crate::components::{user_pos_form::UserPOSForm, logged_in_pos::LoggedInPOS};
 
 #[derive(Properties, PartialEq)]
 pub struct Properties
 {
-	pub id: String,
+	pub merchant_uid: String,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, PartialEq)]
 pub struct Merchant
 {
 	pub uid: String,
 	pub name: String,
 }
 
-
 #[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
 #[store(storage = "local", storage_tab_sync)]
-pub struct AuthState
+pub struct PersistentState
 {
 	pub token: Option<String>,
+	pub phone: Option<String>,
 }
 
 #[styled_component]
 pub fn UserPOS(props: &Properties) -> Html
 {
-	let auth = use_store::<AuthState>().0;
+	let auth = use_store::<PersistentState>().0;
 
 	let heading = style!(r#"
 
@@ -89,8 +89,8 @@ pub fn UserPOS(props: &Properties) -> Html
 		"#).unwrap();
 
 	let has_loaded = use_state(|| false);
-	let merchant = use_state(|| Merchant { uid: props.id.clone(), name: "Loading...".to_string() });
-	let uid = props.id.clone();
+	let merchant = use_state(|| Merchant { uid: props.merchant_uid.clone(), name: "Loading...".to_string() });
+	let uid = props.merchant_uid.clone();
 	let callback = {
 		let state = merchant.clone();
 		Callback::from(move |merchant: Merchant| state.set(merchant))
@@ -110,18 +110,17 @@ pub fn UserPOS(props: &Properties) -> Html
 				<div class={heading}>
 					<h1>{format!("rainyday x {}", merchant.name)}</h1>
 				</div>
-				<div class={message}>
-					<h2>{ "one-time signup." }</h2>
-					<h2>{ "*10%* off everything forever." }</h2>
-				</div>
 				if auth.token.is_none()
 				{
+					<div class={message}>
+						<h2>{ "one-time signup." }</h2>
+						<h2>{ "*10%* off everything forever." }</h2>
+					</div>
 					<UserPOSForm />
 				}
 				else
 				{
-					<h1>{"Code verified!"}</h1>
-					<h2>{format!("{:?}", auth)}</h2>
+					<LoggedInPOS merchant={(*merchant).clone()}/>
 				}
 				<div class={img}>
 					<img src="img/logo.png" alt="logo"/> 

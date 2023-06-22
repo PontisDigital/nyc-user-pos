@@ -1,8 +1,14 @@
 use yew::prelude::*;
 use stylist::{yew::styled_component, style};
 
+#[derive(Properties, PartialEq)]
+pub struct Props
+{
+  pub title: Option<String>,
+}
+
 #[styled_component]
-pub fn Button() -> Html
+pub fn Button(props: &Props) -> Html
 {
     let stylesheet = style!
     {
@@ -88,7 +94,9 @@ touch-action: manipulation;
 
     html!
     {
-        <button class={stylesheet}>{"Submit"}</button>
+        <button class={stylesheet}>
+		  {props.title.clone().unwrap_or("Submit".to_string())}
+		</button>
     }
 }
 

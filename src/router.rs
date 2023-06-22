@@ -10,8 +10,8 @@ pub enum Route
     Home,
     #[at("/discounts")]
     Discounts,
-    #[at("/pos/:id")]
-    UserPOS { id: String },
+    #[at("/pos/:merchant_uid")]
+    UserPOS { merchant_uid: String },
 }
 
 pub fn switch(routes: Route) -> Html
@@ -20,7 +20,7 @@ pub fn switch(routes: Route) -> Html
     {
         Route::Home => html! { <Home /> },
         Route::Discounts => html! { <Discounts /> },
-        Route::UserPOS { id } => html! { <UserPOS id={id}/> },
+        Route::UserPOS { merchant_uid } => html! { <UserPOS merchant_uid={merchant_uid}/> },
     }
 }
 

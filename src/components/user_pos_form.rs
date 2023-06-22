@@ -2,7 +2,7 @@ use gloo::{console::log, net::http::Request};
 use serde_json::json;
 use yew::prelude::*;
 use yewdux::prelude::*;
-use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::AuthState};
+use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::PersistentState};
 use stylist::{yew::styled_component, style, Style};
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -22,7 +22,7 @@ struct CodeVerifiedResponse
 #[styled_component]
 pub fn UserPOSForm() -> Html
 {
-	let dispatch = use_store::<AuthState>().1;
+	let dispatch = use_store::<PersistentState>().1;
 
 	let stylesheet: Style = style!(r#"
 
@@ -92,7 +92,6 @@ pub fn UserPOSForm() -> Html
 			}
 			else // dealing with verification code field
 			{
-				let cistate = cistate.clone();
 				let verify_response_clone = verify_response_clone.clone();
 				wasm_bindgen_futures::spawn_local(async move
 				{
@@ -120,7 +119,10 @@ pub fn UserPOSForm() -> Html
 							{
 								log!("verified");
 								log!(format!("{:?}", vfied));
-								dispatch.set(AuthState {token: Some(vfied.token)});
+								dispatch.set(PersistentState {
+									token: Some(vfied.token),
+									phone: Some((*pistate).clone()),
+								});
 							}
 						},
 						Err(_) =>
@@ -138,7 +140,7 @@ pub fn UserPOSForm() -> Html
 		{
 			<form onsubmit={onsubmit}>
 				<PhoneInput onchange={onchange}/>
-				<Button />
+				<Button title={"Submit"}/>
 			</form>
 		}
 		else
@@ -148,13 +150,17 @@ pub fn UserPOSForm() -> Html
 				<h1>{"Enter the code we sent you"}</h1>
 				<form onsubmit={onsubmit}>
 					<CodeInput onchange={onchange}/>
-					<Button />
+					<Button title={"Submit"}/>
 				</form>
 			}
 			else
 			{
 				<h1>{"Code verified!"}</h1>
 				<h2>{&verify_response.token}</h2>
+
+				<form onsubmit={onsubmit}>
+					<Button title={"Confirm"}/>
+				</form>
 			}
 		}
 		</div>
