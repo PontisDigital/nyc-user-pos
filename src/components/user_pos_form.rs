@@ -76,8 +76,10 @@ pub fn UserPOSForm() -> Html
 					let response = Request::post("https://api.rainyday.deals/sms-login")
 						.json(&json!(
 							{
-								"phone": *pistate,
-								"testing": true,
+								"auth": {
+									"phone": *pistate,
+									"testing": true,
+								}
 							}
 						))
 						.unwrap()
@@ -97,9 +99,11 @@ pub fn UserPOSForm() -> Html
 					let response = Request::post("https://api.rainyday.deals/sms-login")
 						.json(&json!(
 							{
-								"phone": *pistate,
-								"code": *cistate,
-								"testing": true,
+								"auth": {
+									"phone": *pistate,
+									"code": *cistate,
+									"testing": true,
+								}
 							}
 						))
 						.unwrap()

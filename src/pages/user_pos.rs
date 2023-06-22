@@ -1,10 +1,9 @@
-use std::collections::HashMap;
-
-use reqwasm::http::Request;
+use gloo::net::http::Request;
 use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use yewdux::prelude::*;
+use serde_json::json;
 
 use crate::components::user_pos_form::UserPOSForm;
 
@@ -155,13 +154,17 @@ fn get_merchant_map(uid: String, callback: Callback<Merchant>)
 
 async fn get_merchant_name(uid: String) -> String
 {
-	let merchant_map = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
+	let response = Request::post("https://api.rainyday.deals/sms-login")
+		.json(&json!(
+				{
+					"merchant_uid": uid 
+				}))
+		.unwrap()
 		.send()
 		.await
-		.unwrap()
-		.json::<HashMap<String, Merchant>>()
-		.await
 		.unwrap();
-	merchant_map.get(&uid).unwrap().name.clone()
+
+	let merchant = response.json::<Merchant>().await.unwrap();
+	merchant.name
 }
 
