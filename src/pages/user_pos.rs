@@ -111,12 +111,19 @@ pub fn UserPOS(props: &Properties) -> Html
 				<div class={heading}>
 					<h1>{format!("rainyday x {}", merchant.name)}</h1>
 				</div>
-				<h1>{format!("{:?}", auth)}</h1>
 				<div class={message}>
 					<h2>{ "one-time signup." }</h2>
 					<h2>{ "*10%* off everything forever." }</h2>
 				</div>
-				<UserPOSForm />
+				if auth.token.is_none()
+				{
+					<UserPOSForm />
+				}
+				else
+				{
+					<h1>{"Code verified!"}</h1>
+					<h2>{format!("{:?}", auth)}</h2>
+				}
 				<div class={img}>
 					<img src="img/logo.png" alt="logo"/> 
 				</div>
