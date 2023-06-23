@@ -1,6 +1,5 @@
-use std::thread::sleep;
-
 use gloo::{net::http::Request, timers::callback::Timeout};
+use rust_decimal::Decimal;
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 
@@ -10,10 +9,21 @@ pub struct Props
     pub merchant_uid: String,
 }
 
+#[derive(serde::Deserialize, serde::Serialize, Debug)]
+struct Sale
+{
+	phone: String,
+	merchant_uid: String,
+	purchase_price: Option<Decimal>,
+	status: String,
+}
+
 #[derive(serde::Deserialize, serde::Serialize)]
 pub struct PollResponse
 {
-	message: String,
+	complete: bool,
+	pending_sales: Option<Vec<Sale>>,
+
 }
 
 #[styled_component]
@@ -51,35 +61,73 @@ pub fn MerchantPortal(props: &Props) -> Html
 			}
 		}
 		"#).unwrap();
+	
+	let sale_alert_state = use_state(|| false);
+	let sale_alert_state_clone = sale_alert_state.clone();
+	let pending_sales_state = use_state(|| Vec::<Sale>::new());
+	let pending_sales_state_clone = pending_sales_state.clone();
+	let props_clone = props.clone();
 
-	let random_message = use_state(|| "".to_string());
-	let random_message_clone = random_message.clone();
-
-	Timeout::new(1_000, move ||
+	if !*sale_alert_state
 	{
-		wasm_bindgen_futures::spawn_local(async move
+		Timeout::new(1_000, move ||
 		{
-			let req = Request::post("https://api.rainyday.deals/merchant").send().await;
-			match req
+			let sale_alert_state_clone = sale_alert_state.clone();
+			let pending_sales_state_clone = pending_sales_state.clone();
+			let props = props_clone.clone();
+			wasm_bindgen_futures::spawn_local(async move
 			{
-				Ok(res) =>
+				let sale_alert_state = sale_alert_state_clone.clone();
+				let pending_sales_state = pending_sales_state_clone.clone();
+
+				let response = Request::post("https://api.rainyday.deals/merchant")
+					.json(&serde_json::json!(
+							{
+								"request_type": "poll",
+								"merchant_uid": props.merchant_uid
+							}
+					))
+					.unwrap()
+					.send()
+					.await;
+
+				match response
 				{
-					let message = res.json::<PollResponse>().await.unwrap();
-					random_message_clone.set(message.message);
-				},
-				Err(_) =>
-				{
+					Ok(res) =>
+					{
+						let poll_response = res.json::<PollResponse>().await.unwrap();
+						if !poll_response.complete
+						{
+							pending_sales_state.set(poll_response.pending_sales.unwrap());
+							sale_alert_state.set(true);
+						}
+						else
+						{
+							pending_sales_state.set(Vec::<Sale>::new());
+							sale_alert_state.set(false);
+						}
+					},
+					Err(_) =>
+					{
+					}
 				}
-			}
-		});
-	}).forget();
+			});
+		}).forget();
+	}
 
     html! {
         <div class={stylesheet}>
             <h1>{ "Merchant Portal" }</h1>
-            <h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
-			<p>{ format!("Poll Test: {}", *random_message) }</p>
-            <p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
+			if !*sale_alert_state_clone
+			{
+				<h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
+				<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
+			}
+			else
+			{
+				<h1>{ format!("SALE ALERT!!!") }</h1>
+				<p>{ format!("Pending Sales: {:?}", (*pending_sales_state_clone)) }</p>
+			}
 			<div class={img_style}>
 				<img src="img/logo.png" alt="logo"/> 
 			</div>
