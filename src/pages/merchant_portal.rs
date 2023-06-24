@@ -3,7 +3,7 @@ use rust_decimal::Decimal;
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 
-use crate::components::button::Button;
+use crate::components::{button::Button, sale_amount_input::SaleInput};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props
@@ -68,7 +68,8 @@ pub fn MerchantPortal(props: &Props) -> Html
 			}
 		}
 		"#).unwrap();
-	
+
+	let price_input = use_state(|| Decimal::new(0, 0));
 	let sale_alert_state = use_state(|| false);
 	let sale_alert_state_clone = sale_alert_state.clone();
 	let pending_sales_state = use_state(|| Vec::<Sale>::new());
@@ -126,7 +127,18 @@ pub fn MerchantPortal(props: &Props) -> Html
 	let props_clone = props.clone();
 	let sale_alert_state_cloned = sale_alert_state_clone.clone();
 
-	let on_complete_sale = Callback::from(move |event: MouseEvent|
+	let piclone	= price_input.clone();
+
+	let on_sale_amount_change = Callback::from(move |input: String|
+		{
+			let input: String = input[1..].to_string();
+			let mut price_decimal = Decimal::from_str_exact(&input).unwrap();
+			price_decimal.set_scale(2).unwrap();
+			log!(format!("Price input: {}", &price_decimal));
+			price_input.set(price_decimal);
+		});
+
+	let on_complete_sale = Callback::from(move |event: SubmitEvent|
 		{
 			event.prevent_default();
 
@@ -135,9 +147,10 @@ pub fn MerchantPortal(props: &Props) -> Html
 			let props = props_clone.clone();
 			let sale_alert_state = sale_alert_state_cloned.clone();
 			let pending_sales_state = psales_for_callback.clone();
+			let piclone = piclone.clone();
 			wasm_bindgen_futures::spawn_local(async move
 			{
-
+				let price_input = piclone.clone();
 				log!("Completing sale for ", &pending_sales[0].phone);
 
 				let response = Request::post("https://api.rainyday.deals/merchant")
@@ -147,6 +160,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 								"merchant_uid": props.merchant_uid,
 								"merchant_token": "".to_string(),
 								"user_phone": pending_sales[0].phone,
+								"price_of_sale": (*price_input).clone()
 							}
 					))
 					.unwrap()
@@ -174,10 +188,14 @@ pub fn MerchantPortal(props: &Props) -> Html
 			}
 			else
 			{
-				<h1>{ format!("SALE ALERT!!!") }</h1>
-				<p>{ format!("Pending Sale: {:?}", (&(*pending_sales_state_clone)[0])) }</p>
+				<h1>{ format!("Pending Sale") }</h1>
+				<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
+				<h2>{ format!("Input Sale Price") }</h2>
 				<div>
-					<Button title={"Complete Sale"} on_click={on_complete_sale}/>
+					<form onsubmit={on_complete_sale}>
+						<SaleInput onchange={on_sale_amount_change}/>
+						<Button title={"Complete Sale"} />
+					</form>
 				</div>
 			}
 			<div class={img_style}>
