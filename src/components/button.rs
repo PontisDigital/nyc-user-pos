@@ -5,6 +5,7 @@ use stylist::{yew::styled_component, style};
 pub struct Props
 {
   pub title: Option<String>,
+  pub on_click: Option<Callback<MouseEvent>>,
 }
 
 #[styled_component]
@@ -94,9 +95,18 @@ touch-action: manipulation;
 
     html!
     {
+	  if props.on_click.is_none()
+	  {
         <button class={stylesheet}>
 		  {props.title.clone().unwrap_or("Submit".to_string())}
 		</button>
+	  }
+	  else
+	  {
+        <button class={stylesheet} onclick={props.on_click.as_ref().unwrap()}>
+		  {props.title.clone().unwrap_or("Submit".to_string())}
+		</button>
+	  }
     }
 }
 
