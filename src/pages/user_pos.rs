@@ -1,9 +1,11 @@
-use gloo::net::http::Request;
+use std::collections::HashMap;
+
+use gloo::console::log;
+use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use yewdux::prelude::*;
-use serde_json::json;
 
 use crate::components::{user_pos_form::UserPOSForm, logged_in_pos::LoggedInPOS};
 
@@ -13,7 +15,7 @@ pub struct Properties
 	pub merchant_uid: String,
 }
 
-#[derive(Serialize, Deserialize, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, PartialEq, Debug)]
 pub struct Merchant
 {
 	pub uid: String,
@@ -141,29 +143,23 @@ fn get_merchant_map(uid: String, callback: Callback<Merchant>)
 {
 	wasm_bindgen_futures::spawn_local(async move
 		{
-			let name = get_merchant_name(uid.clone()).await;
-			let merchant = Merchant
-			{
-				name,
-				uid,
-			};
+			let merchant = get_merchant(uid.clone()).await;
 			callback.emit(merchant);
 		});
 }
 
-async fn get_merchant_name(uid: String) -> String
+async fn get_merchant(uid: String) -> Merchant
 {
-	let response = Request::post("https://api.rainyday.deals/sms-login")
-		.json(&json!(
-				{
-					"merchant_uid": uid 
-				}))
-		.unwrap()
+	let response = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
 		.send()
+		.await
+		.unwrap()
+		.json::<HashMap<String,Merchant>>()
 		.await
 		.unwrap();
 
-	let merchant = response.json::<Merchant>().await.unwrap();
-	merchant.name
+	log!(format!("merchant: {:?}", response));
+
+	response.get(&uid).unwrap().clone()
 }
 
