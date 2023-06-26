@@ -4,3 +4,4 @@ pub mod user_pos_form;
 pub mod verification_code_input;
 pub mod logged_in_pos;
 pub mod sale_amount_input;
+pub mod merchant_password_input;

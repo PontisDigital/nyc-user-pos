@@ -4,7 +4,7 @@ use yew::prelude::*;
 use yewdux::prelude::*;
 use stylist::{yew::styled_component, style, Style};
 
-use crate::{pages::user_pos::{PersistentState, Merchant}, components::button::Button};
+use crate::{pages::user_pos::{UserPersistentState, Merchant}, components::button::Button};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 struct RequestSent
@@ -21,7 +21,7 @@ pub struct Props
 #[styled_component]
 pub fn LoggedInPOS(props: &Props) -> Html
 {
-	let auth = use_store::<PersistentState>().0;
+	let auth = use_store::<UserPersistentState>().0;
 
 	let submitted_state = use_state(|| false);
 

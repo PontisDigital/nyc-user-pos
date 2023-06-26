@@ -1,14 +1,16 @@
 use gloo::{net::http::Request, timers::callback::Timeout, console::log};
 use rust_decimal::Decimal;
+use serde::{Serialize, Deserialize};
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
+use yewdux::prelude::*;
 
-use crate::components::{button::Button, sale_amount_input::SaleInput};
+use crate::components::{button::Button, sale_amount_input::SaleInput, merchant_password_input::PasswordInput};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props
 {
-    pub merchant_uid: String,
+	pub merchant_uid: String,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
@@ -21,17 +23,31 @@ struct Sale
 }
 
 #[derive(serde::Deserialize, serde::Serialize)]
+pub struct MerchantAuthResponse
+{
+	success: bool,
+	token: Option<String>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
 pub struct PollResponse
 {
 	complete: bool,
 	pending_sales: Option<Vec<Sale>>,
+}
 
+#[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
+#[store(storage = "local", storage_tab_sync)]
+pub struct MerchantPersistentState
+{
+	pub token: Option<String>,
 }
 
 #[styled_component]
 pub fn MerchantPortal(props: &Props) -> Html
 {
-    let stylesheet = style!(r#"
+	let token = use_store::<MerchantPersistentState>();
+	let stylesheet = style!(r#"
 
 		font-family: 'Bai Jamjuree', sans-serif;
 		text-align: center;
@@ -56,7 +72,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 			font-size: 20px;
 		}
 
-        "#).unwrap();
+		"#).unwrap();
 
 	let img_style = style!(r#"
 		img {
@@ -76,13 +92,16 @@ pub fn MerchantPortal(props: &Props) -> Html
 	let pending_sales_state_clone = pending_sales_state.clone();
 	let props_clone = props.clone();
 
-	if !*sale_alert_state
+	let token_clone = token.clone();
+	let tc = token.clone();
+	if !*sale_alert_state && token.0.token.is_some()
 	{
 		Timeout::new(1_000, move ||
 		{
 			let sale_alert_state_clone = sale_alert_state.clone();
 			let pending_sales_state_clone = pending_sales_state.clone();
 			let props = props_clone.clone();
+			let token_clone = tc.clone();
 			wasm_bindgen_futures::spawn_local(async move
 			{
 				let sale_alert_state = sale_alert_state_clone.clone();
@@ -92,7 +111,8 @@ pub fn MerchantPortal(props: &Props) -> Html
 					.json(&serde_json::json!(
 							{
 								"request_type": "poll",
-								"merchant_uid": props.merchant_uid
+								"merchant_uid": props.merchant_uid,
+								"merchant_token": token_clone.0.token.as_ref().unwrap()
 							}
 					))
 					.unwrap()
@@ -108,8 +128,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 						{
 							pending_sales_state.set(poll_response.pending_sales.unwrap());
 							sale_alert_state.set(true);
-						}
-						else
+						} else
 						{
 							pending_sales_state.set(Vec::<Sale>::new());
 							sale_alert_state.set(false);
@@ -129,15 +148,50 @@ pub fn MerchantPortal(props: &Props) -> Html
 
 	let piclone	= price_input.clone();
 
+	let pass_state = use_state(|| String::new());
+	let pass_clone = pass_state.clone();
+	let on_password_input_change = Callback::from(move |input: String|
+		{
+			pass_state.set(input);
+		});
+
+	let merchant_uid = props.merchant_uid.clone();
+	let token_clone = token_clone.clone();
+	let on_login_submit = Callback::from(move |event: SubmitEvent|
+		{
+			event.prevent_default();
+			let merchant_uid_clone = merchant_uid.clone();
+			let pstate = pass_clone.clone();
+			let token = token_clone.clone();
+			wasm_bindgen_futures::spawn_local(async move
+			{
+				let response = Request::post("https://api.rainyday.deals/merchant")
+					.json(&serde_json::json!(
+							{
+								"request_type": "get_auth",
+								"merchant_uid": merchant_uid_clone,
+								"password": *pstate
+							}
+					))
+					.unwrap()
+					.send()
+					.await
+					.unwrap()
+					.json::<MerchantAuthResponse>()
+					.await
+					.unwrap();
+				token.1.set(MerchantPersistentState { token: response.token });
+			});
+		});
 	let on_sale_amount_change = Callback::from(move |input: String|
 		{
 			let input: String = input[1..].to_string();
 			let mut price_decimal = Decimal::from_str_exact(&input).unwrap();
 			price_decimal.set_scale(2).unwrap();
-			log!(format!("Price input: {}", &price_decimal));
 			price_input.set(price_decimal);
 		});
 
+	let token_clone = token.clone();
 	let on_complete_sale = Callback::from(move |event: SubmitEvent|
 		{
 			event.prevent_default();
@@ -148,17 +202,18 @@ pub fn MerchantPortal(props: &Props) -> Html
 			let sale_alert_state = sale_alert_state_cloned.clone();
 			let pending_sales_state = psales_for_callback.clone();
 			let piclone = piclone.clone();
+			let token = token_clone.clone();
 			wasm_bindgen_futures::spawn_local(async move
 			{
 				let price_input = piclone.clone();
 				log!("Completing sale for ", &pending_sales[0].phone);
 
-				let response = Request::post("https://api.rainyday.deals/merchant")
+				let _response = Request::post("https://api.rainyday.deals/merchant")
 					.json(&serde_json::json!(
 							{
 								"request_type": "complete_sale",
 								"merchant_uid": props.merchant_uid,
-								"merchant_token": "".to_string(),
+								"merchant_token": token.0.token.as_ref().unwrap().to_string(),
 								"user_phone": pending_sales[0].phone,
 								"price_of_sale": (*price_input).clone()
 							}
@@ -178,30 +233,41 @@ pub fn MerchantPortal(props: &Props) -> Html
 			});
 		});
 
-    html! {
-        <div class={stylesheet}>
-            <h1>{ "Merchant Portal" }</h1>
-			if !*sale_alert_state_clone
+	html! {
+		<div class={stylesheet}>
+			<h1>{ "Merchant Portal" }</h1>
+			if token.0.token.is_none()
 			{
-				<h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
-				<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
+				<h1>{ "Please Log In" }</h1>
+				<form onsubmit={on_login_submit}>
+					<PasswordInput onchange={on_password_input_change}/>
+					<Button title={"Log In"} />
+				</form>
 			}
 			else
 			{
-				<h1>{ format!("Pending Sale") }</h1>
-				<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
-				<h2>{ format!("Input Sale Price") }</h2>
-				<div>
-					<form onsubmit={on_complete_sale}>
-						<SaleInput onchange={on_sale_amount_change}/>
-						<Button title={"Complete Sale"} />
-					</form>
-				</div>
+				if !*sale_alert_state_clone
+				{
+					<h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
+					<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
+				}
+				else
+				{
+					<h1>{ format!("Pending Sale") }</h1>
+					<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
+					<h2>{ format!("Input Sale Price") }</h2>
+					<div>
+						<form onsubmit={on_complete_sale}>
+							<SaleInput onchange={on_sale_amount_change}/>
+							<Button title={"Complete Sale"} />
+						</form>
+					</div>
+				}
 			}
 			<div class={img_style}>
 				<img src="img/logo.png" alt="logo"/> 
 			</div>
-        </div>
-    }
+		</div>
+	}
 }
 

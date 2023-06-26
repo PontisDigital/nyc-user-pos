@@ -22,7 +22,7 @@ pub struct Merchant
 
 #[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
 #[store(storage = "local", storage_tab_sync)]
-pub struct PersistentState
+pub struct UserPersistentState
 {
 	pub token: Option<String>,
 	pub phone: Option<String>,
@@ -31,7 +31,7 @@ pub struct PersistentState
 #[styled_component]
 pub fn UserPOS(props: &Properties) -> Html
 {
-	let auth = use_store::<PersistentState>().0;
+	let auth = use_store::<UserPersistentState>().0;
 
 	let heading = style!(r#"
 

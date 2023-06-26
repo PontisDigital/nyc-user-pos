@@ -2,7 +2,7 @@ use gloo::{console::log, net::http::Request};
 use serde_json::json;
 use yew::prelude::*;
 use yewdux::prelude::*;
-use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::PersistentState};
+use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::UserPersistentState};
 use stylist::{yew::styled_component, style, Style};
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -22,7 +22,7 @@ struct CodeVerifiedResponse
 #[styled_component]
 pub fn UserPOSForm() -> Html
 {
-	let dispatch = use_store::<PersistentState>().1;
+	let dispatch = use_store::<UserPersistentState>().1;
 
 	let stylesheet: Style = style!(r#"
 
@@ -119,7 +119,7 @@ pub fn UserPOSForm() -> Html
 							{
 								log!("verified");
 								log!(format!("{:?}", vfied));
-								dispatch.set(PersistentState {
+								dispatch.set(UserPersistentState {
 									token: Some(vfied.token),
 									phone: Some((*pistate).clone()),
 								});
