@@ -1,4 +1,4 @@
-use gloo::{net::http::Request, timers::callback::Timeout, console::log};
+use gloo::{net::http::Request, timers::callback::Timeout};
 use rust_decimal::Decimal;
 use serde::{Serialize, Deserialize};
 use stylist::{yew::styled_component, style};
@@ -206,7 +206,6 @@ pub fn MerchantPortal(props: &Props) -> Html
 			wasm_bindgen_futures::spawn_local(async move
 			{
 				let price_input = piclone.clone();
-				log!("Completing sale for ", &pending_sales[0].phone);
 
 				let _response = Request::post("https://api.rainyday.deals/merchant")
 					.json(&serde_json::json!(
@@ -236,7 +235,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 	html! {
 		<div class={stylesheet}>
 			<h1>{ "Merchant Portal" }</h1>
-			if token.0.token.is_none()
+			if !token.0.token.is_none()
 			{
 				<h1>{ "Please Log In" }</h1>
 				<form onsubmit={on_login_submit}>
@@ -246,7 +245,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 			}
 			else
 			{
-				if !*sale_alert_state_clone
+				if *sale_alert_state_clone
 				{
 					<h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
 					<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
@@ -254,8 +253,9 @@ pub fn MerchantPortal(props: &Props) -> Html
 				else
 				{
 					<h1>{ format!("Pending Sale") }</h1>
-					<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
-					<h2>{ format!("Input Sale Price") }</h2>
+					//<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
+					<h2>{ format!("(646)-591-9552") }</h2>
+					<h2>{ format!("Input Full Sale Price") }</h2>
 					<div>
 						<form onsubmit={on_complete_sale}>
 							<SaleInput onchange={on_sale_amount_change}/>

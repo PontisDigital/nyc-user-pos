@@ -79,7 +79,7 @@ pub fn LoggedInPOS(props: &Props) -> Html
 				</h1>
 
 				<form onsubmit={onsubmit}>
-					<Button title={"Confirm"}/>
+					<Button title={"Save now"}/>
 				</form>
 			}
 			else

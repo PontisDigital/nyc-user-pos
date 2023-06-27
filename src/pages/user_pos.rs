@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 
-use gloo::console::log;
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
@@ -57,8 +56,6 @@ pub fn UserPOS(props: &Properties) -> Html
 
 		font-family: 'Bai Jamjuree', sans-serif;
 		text-align: center;
-		display: flex;
-		flex-direction: column;
 		height: 100vh;
 
 		@media (max-width: 1024px) {
@@ -109,14 +106,15 @@ pub fn UserPOS(props: &Properties) -> Html
 		<div class={stylesheet}>
 			if merchant.name != "Loading..."
 			{
-				<div class={heading}>
+				<div class={heading.clone()}>
 					<h1>{format!("rainyday x {}", merchant.name)}</h1>
 				</div>
+
 				if auth.token.is_none()
 				{
 					<div class={message}>
-						<h2>{ "one-time signup." }</h2>
-						<h2>{ "*10%* off everything forever." }</h2>
+						<h2>{ "Enter phone number" }</h2>
+						<h2>{ "Start saving now" }</h2>
 					</div>
 					<UserPOSForm />
 				}
@@ -157,9 +155,6 @@ async fn get_merchant(uid: String) -> Merchant
 		.json::<HashMap<String,Merchant>>()
 		.await
 		.unwrap();
-
-	log!(format!("merchant: {:?}", response));
-
 	response.get(&uid).unwrap().clone()
 }
 

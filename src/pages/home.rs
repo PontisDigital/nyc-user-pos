@@ -4,113 +4,154 @@ use yew::prelude::*;
 #[styled_component]
 pub fn Home() -> Html
 {
-    let thing_at_top = style!(
-        r#"
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            opacity: 0.25;
-            & img {
-                width: 425px;
-                height: auto;
-            }
-            @media (max-width: 1024px) {
-                & img {
-                    width: 1000px;
-                    height: auto;
-                }
-            }
-            @media (max-width: 480px) {
-                & img {
-                    width: 300px;
-                    height: auto;
-                }
-            }
-        "#
-        ).unwrap();
+	let image_in_back = style!(
+		r#"
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			-webkit-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+			opacity: 0.25;
+			& img {
+				width: 425px;
+				height: auto;
+			}
+			@media (max-width: 1024px) {
+				& img {
+					width: 1000px;
+					height: auto;
+				}
+			}
+			@media (max-width: 480px) {
+				& img {
+					width: 300px;
+					height: auto;
+				}
+			}
+		"#
+		).unwrap();
 
-    let stylesheet = style!(
-        r#"
-            color: white;
-            text-align: center;
-            font-family: Bai Jamjuree, Courier, monospace;
-            letter-spacing: 0.1em;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            -webkit-transform: translate(-50%, -50%);
-            transform: translate(-50%, -50%);
-            @media (min-width: 1024px) {
-                & h2 {
-                    font-size: 20px;
-                }
-                & p {
-                    font-size: 18px;
-                    font-weight: 400;
-                    margin: 0;
-                    padding: 0;
-                    letter-spacing: 0.1em;
-                }
-            }
-            @media (max-width: 1024px) {
-                & h2 {
-                    font-size: 72px;
-                }
-            }
-        "#
-        ).unwrap();
+	let stylesheet = style!(
+		r#"
+			color: white;
+			text-align: center;
+			font-family: Bai Jamjuree, Courier, monospace;
+			letter-spacing: 0.1em;
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			-webkit-transform: translate(-50%, -50%);
+			transform: translate(-50%, -50%);
+			@media (min-width: 1024px) {
+				& h2 {
+					font-size: 20px;
+				}
+				& p {
+					font-size: 18px;
+					font-weight: 400;
+					margin: 0;
+					padding: 0;
+					letter-spacing: 0.1em;
+				}
+			}
+			@media (max-width: 1024px) {
+				& h2 {
+					font-size: 58px;
+					white-space: nowrap;
+				}
+			}
+		"#
+		).unwrap();
 
-    let thing_at_bottom = style!(
-        r#"
-            color: white;
-            font-size: 18px;
-            text-align: center;
-            font-family: Bai Jamjuree, Courier, monospace;
-            letter-spacing: 0.1em;
-            position: absolute;
-            left: 50%;
-            top: 85%;
-            -webkit-transform: translate(-50%, -85%);
-            transform: translate(-50%, -85%);
-            & h2 {
-                font-size: 20px;
-            }
-            & p {
-                font-size: 18px;
-                font-weight: 400;
-                margin: 0;
-                padding: 0;
-                letter-spacing: 0.1em;
-            }
-            @media (max-width: 1024px) {
-                & p {
-                    font-size: 40px;
-                    font-weight: 400;
-                    margin: 0;
-                    padding: 0;
-                    letter-spacing: 0.1em;
-                }
-            }
-        "#
-        ).unwrap();
+	let thing_at_bottom = style!(
+		r#"
+			color: white;
+			font-size: 18px;
+			text-align: center;
+			font-family: Bai Jamjuree, Courier, monospace;
+			letter-spacing: 0.1em;
+			position: absolute;
+			left: 50%;
+			top: 90%;
+			-webkit-transform: translate(-50%, -90%);
+			transform: translate(-50%, -90%);
+			& h2 {
+				font-size: 20px;
+			}
+			& p {
+				font-size: 18px;
+				font-weight: 400;
+				margin: 0;
+				padding: 0;
+				letter-spacing: 0.1em;
+			}
+			@media (max-width: 1024px) {
+				& p {
+					font-size: 40px;
+					font-weight: 400;
+					margin-top: 20px;
+					padding: 0;
+					letter-spacing: 0.1em;
+				}
+			}
+		"#
+		).unwrap();
 
-    html!
-    {
-        <>
-            <div class={thing_at_top}>
-                <img src="img/logo.png" alt="logo"/> 
-            </div>
-            <div class={stylesheet}>
-                <h2>{ "GREENE FOOD DELI" }</h2>
-                <h2>{ "GREENE MARKET DELI" }</h2>
-                <h2>{ "FRANKLIN CONVENIENCE" }</h2>
-            </div>
-            <div class={thing_at_bottom}>
-                <p> { "rainyday" } </p>
-                <p> { "Thank us later" } </p>
-            </div>
-        </>
-    }
+		let save_10 = style!(
+		r#"
+			color: #30F0CE;
+			text-align: center;
+			font-family: Bai Jamjuree, Courier, monospace;
+			letter-spacing: 0.1em;
+			position: absolute;
+			left: 50%;
+			top: 25%;
+			-webkit-transform: translate(-50%, -25%);
+			transform: translate(-50%, -25%);
+			@media (min-width: 1024px) {
+				& h2 {
+					font-size: 20px;
+				}
+				& p {
+					font-size: 18px;
+					font-weight: 400;
+					margin: 0;
+					padding: 0;
+					letter-spacing: 0.1em;
+				}
+			}
+			@media (max-width: 1024px) {
+				font-size: 2.25vw;
+				left: 50%;
+				top: 10%;
+				-webkit-transform: translate(-50%, -10%);
+				transform: translate(-50%, -10%);
+				white-space: nowrap;
+				& h1 {
+				}
+			}
+		"#
+			).unwrap();
+
+	html!
+	{
+		<>
+			<div class={save_10}>
+				<h1>{ "SAVE 10% EVERYWHERE IN BED-STUY" }</h1>
+			</div>
+			<div class={image_in_back}>
+				<img src="img/logo.png" alt="logo"/> 
+			</div>
+			<div class={stylesheet}>
+				<h2>{ "GREENE FOOD DELI" }</h2>
+				<h2>{ "GREENE MARKET DELI" }</h2>
+				<h2>{ "FRANKLIN CONVENIENCE" }</h2>
+				<h2>{ "and more coming" }</h2>
+			</div>
+			<div class={thing_at_bottom}>
+				<p> { "rainyday" } </p>
+				<p> { "never pay full price again" } </p>
+			</div>
+		</>
+	}
 }
