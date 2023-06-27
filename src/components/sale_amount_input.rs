@@ -7,7 +7,7 @@ use web_sys::HtmlInputElement;
 #[derive(Properties, PartialEq)]
 pub struct Props
 {
-	pub onchange: Callback<String>
+	pub onchange: Callback<String>,
 }
 
 #[styled_component]
@@ -60,8 +60,9 @@ input::-webkit-inner-spin-button {
 
 	"#).unwrap();
 
-	let oninput = Callback::from(|event: InputEvent|
+	let oninput = Callback::from(move |event: InputEvent|
 		{
+			event.prevent_default();
 			let input_field = event
 				.target()
 				.unwrap()
@@ -69,8 +70,6 @@ input::-webkit-inner-spin-button {
 			let value = input_field.value();
 			input_field.set_value(&format_code(value.as_str()));
 		});
-
-	let input_callback = props.onchange.clone();
 
 	let oninvalid = Callback::from(|event: Event|
 		{
@@ -81,15 +80,16 @@ input::-webkit-inner-spin-button {
 			log!(format!("Invalid input: {}", input_field.value()));
 		});
 
+	let onchange_callback = props.onchange.clone();
 	let onchange = Callback::from(move |event: Event|
 		{
+			event.prevent_default();
 			let value = event
 				.target()
 				.unwrap()
 				.unchecked_into::<HtmlInputElement>()
 				.value();
-			input_callback.emit(value);
-
+			onchange_callback.emit(value);
 		});
 
 	html!

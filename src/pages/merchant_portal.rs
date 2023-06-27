@@ -1,11 +1,12 @@
-use gloo::{net::http::Request, timers::callback::Timeout};
+use gloo::{net::http::Request, timers::callback::Timeout, console::log};
 use rust_decimal::Decimal;
 use serde::{Serialize, Deserialize};
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use yewdux::prelude::*;
+use rusty_money::{Money, iso};
 
-use crate::components::{button::Button, sale_amount_input::SaleInput, merchant_password_input::PasswordInput};
+use crate::{components::{button::Button, sale_amount_input::SaleInput, merchant_password_input::PasswordInput}, pages::user_pos::get_merchant};
 
 #[derive(Debug, Clone, PartialEq, Properties)]
 pub struct Props
@@ -18,7 +19,7 @@ struct Sale
 {
 	phone: String,
 	merchant_uid: String,
-	purchase_price: Option<Decimal>,
+	purchase_price: Option<String>,
 	status: String,
 }
 
@@ -85,8 +86,23 @@ pub fn MerchantPortal(props: &Props) -> Html
 		}
 		"#).unwrap();
 
-	let price_input = use_state(|| Decimal::new(0, 0));
+	let merchant_name = use_state(|| "".to_string());
+	let mname_clone = merchant_name.clone();
+	let props_clone = props.clone();
+	if (*merchant_name).is_empty()
+	{
+		wasm_bindgen_futures::spawn_local(async move
+			{
+				let merchant = get_merchant(props_clone.merchant_uid.clone()).await;
+				mname_clone.set(merchant.name);
+			});
+	}
+	let price_input = use_state(|| "".to_string());
+	let discount_state = use_state(|| "".to_string());
+	let discount_state_clone = discount_state.clone();
 	let sale_alert_state = use_state(|| false);
+	let show_discounted_price = use_state(|| false);
+	let show_discounted_price_clone = show_discounted_price.clone();
 	let sale_alert_state_clone = sale_alert_state.clone();
 	let pending_sales_state = use_state(|| Vec::<Sale>::new());
 	let pending_sales_state_clone = pending_sales_state.clone();
@@ -183,16 +199,44 @@ pub fn MerchantPortal(props: &Props) -> Html
 				token.1.set(MerchantPersistentState { token: response.token });
 			});
 		});
+	let diclone = discount_state.clone();
 	let on_sale_amount_change = Callback::from(move |input: String|
 		{
 			let input: String = input[1..].to_string();
-			let mut price_decimal = Decimal::from_str_exact(&input).unwrap();
-			price_decimal.set_scale(2).unwrap();
-			price_input.set(price_decimal);
+			let money = Money::from_str(&input, iso::USD).unwrap();
+			let with_discount = Money::from_decimal(
+				money.amount().checked_mul(Decimal::from_str_exact("0.9").unwrap()).unwrap()
+				, iso::USD);
+			let mut with_discount_str: String = format!("{}", with_discount);
+			if with_discount_str.find(".").unwrap_or(with_discount_str.len()) == with_discount_str.len() - 2
+			{
+				with_discount_str.push_str("0");
+			}
+			let mut money_str: String = format!("{}", money);
+			if money_str.find(".").unwrap_or(money_str.len()) == money_str.len() - 2
+			{
+				money_str.push_str("0");
+			}
+			log!(format!("Money: {}", money_str));
+			price_input.set(money_str);
+			log!(format!("With discount: {}", with_discount_str));
+			diclone.set(with_discount_str);
 		});
 
 	let token_clone = token.clone();
-	let on_complete_sale = Callback::from(move |event: SubmitEvent|
+	let show_disc_price = show_discounted_price_clone.clone();
+	let pinclone = piclone.clone();
+	let on_price_input = Callback::from(move |event: SubmitEvent|
+		{
+			event.prevent_default();
+			let pinclone = pinclone.clone();
+			if (*pinclone).is_empty() || (*pinclone).len() < 2
+			{
+				return;
+			}
+			show_disc_price.set(true);
+		});
+	let on_sale_completion = Callback::from(move |event: SubmitEvent|
 		{
 			event.prevent_default();
 
@@ -203,6 +247,8 @@ pub fn MerchantPortal(props: &Props) -> Html
 			let pending_sales_state = psales_for_callback.clone();
 			let piclone = piclone.clone();
 			let token = token_clone.clone();
+			let show_discounted_price_clone = show_discounted_price_clone.clone();
+			let discount_state = discount_state_clone.clone();
 			wasm_bindgen_futures::spawn_local(async move
 			{
 				let price_input = piclone.clone();
@@ -214,7 +260,8 @@ pub fn MerchantPortal(props: &Props) -> Html
 								"merchant_uid": props.merchant_uid,
 								"merchant_token": token.0.token.as_ref().unwrap().to_string(),
 								"user_phone": pending_sales[0].phone,
-								"price_of_sale": (*price_input).clone()
+								"price_of_sale": (*price_input).clone(),
+								"price_with_discount": (*discount_state).clone(),
 							}
 					))
 					.unwrap()
@@ -222,7 +269,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 					.await;
 
 				pending_sales.remove(0);
-
+				show_discounted_price_clone.set(false);
 				if pending_sales.is_empty()
 				{
 					sale_alert_state.set(false);
@@ -234,8 +281,8 @@ pub fn MerchantPortal(props: &Props) -> Html
 
 	html! {
 		<div class={stylesheet}>
-			<h1>{ "Merchant Portal" }</h1>
-			if !token.0.token.is_none()
+			<h1>{ format!("{} Portal", *merchant_name) }</h1>
+			if token.0.token.is_none()
 			{
 				<h1>{ "Please Log In" }</h1>
 				<form onsubmit={on_login_submit}>
@@ -245,7 +292,7 @@ pub fn MerchantPortal(props: &Props) -> Html
 			}
 			else
 			{
-				if *sale_alert_state_clone
+				if !*sale_alert_state_clone
 				{
 					<h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
 					<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
@@ -253,15 +300,24 @@ pub fn MerchantPortal(props: &Props) -> Html
 				else
 				{
 					<h1>{ format!("Pending Sale") }</h1>
-					//<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
-					<h2>{ format!("(646)-591-9552") }</h2>
-					<h2>{ format!("Input Full Sale Price") }</h2>
-					<div>
-						<form onsubmit={on_complete_sale}>
-							<SaleInput onchange={on_sale_amount_change}/>
-							<Button title={"Complete Sale"} />
+					<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
+					if !*show_discounted_price
+					{
+						<h2>{ format!("Input Full Sale Price") }</h2>
+						<div>
+							<form onsubmit={on_price_input}>
+								<SaleInput onchange={on_sale_amount_change} />
+								<Button title={"Continue"} />
+							</form>
+						</div>
+					}
+					else
+					{
+						<h2> { format!("Customer owes you {}", *discount_state) } </h2>
+						<form onsubmit={on_sale_completion}>
+							<Button title={"Complete Sale"}/>
 						</form>
-					</div>
+					}
 				}
 			}
 			<div class={img_style}>

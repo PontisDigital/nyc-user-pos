@@ -10,6 +10,7 @@ use crate::{pages::user_pos::{UserPersistentState, Merchant}, components::button
 struct RequestSent
 {
 	success: bool,
+	error: Option<String>,
 }
 
 #[derive(Properties, Clone, PartialEq)]
@@ -39,6 +40,8 @@ pub fn LoggedInPOS(props: &Props) -> Html
 	let merchant_uid = props.merchant.uid.clone();
 
 	let submitted_state_clone = submitted_state.clone();
+
+	let dispatch = use_store::<UserPersistentState>().1;
 	let onsubmit = Callback::from(move |event: SubmitEvent|
 	{
 		event.prevent_default();
@@ -46,6 +49,7 @@ pub fn LoggedInPOS(props: &Props) -> Html
 		let token = token.clone();
 		let merchant_uid = merchant_uid.clone();
 		let submitted_state = submitted_state_clone.clone();
+		let dclone = dispatch.clone();
 		wasm_bindgen_futures::spawn_local(async move
 		{
 			let result = Request::post("https://api.rainyday.deals/sms-login")
@@ -62,8 +66,16 @@ pub fn LoggedInPOS(props: &Props) -> Html
 				.send()
 				.await
 				.unwrap();
-			let success = result.json::<RequestSent>().await.unwrap().success;
-			submitted_state.set(success);
+			let response = result.json::<RequestSent>().await.unwrap();
+			if response.error.is_some()
+			{
+				dclone.set(UserPersistentState
+				{
+					token: None,
+					phone: None,
+				});
+			}
+			submitted_state.set(response.success);
 		});
 	});
 

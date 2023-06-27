@@ -137,7 +137,7 @@ pub fn UserPOS(props: &Properties) -> Html
 	}
 }
 
-fn get_merchant_map(uid: String, callback: Callback<Merchant>)
+pub fn get_merchant_map(uid: String, callback: Callback<Merchant>)
 {
 	wasm_bindgen_futures::spawn_local(async move
 		{
@@ -146,7 +146,7 @@ fn get_merchant_map(uid: String, callback: Callback<Merchant>)
 		});
 }
 
-async fn get_merchant(uid: String) -> Merchant
+pub async fn get_merchant(uid: String) -> Merchant
 {
 	let response = Request::get("https://raw.githubusercontent.com/PontisDigital/nyc-user-pos/master/merchants.json")
 		.send()

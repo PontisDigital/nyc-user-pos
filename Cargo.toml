@@ -9,6 +9,7 @@ edition = "2021"
 yew = { vesion = "0.20.0", features = ["csr"] }
 gloo = "0.8.1"
 rust_decimal = "1.28"
+rusty-money = { version = "0.4.1", features = ["iso"]}
 serde = "1.0.164"
 serde_json = "1.0.97"
 yew-router = "0.17.0"
