@@ -2,6 +2,8 @@ use gloo::{net::http::Request, timers::callback::Timeout, console::log};
 use rust_decimal::Decimal;
 use serde::{Serialize, Deserialize};
 use stylist::{yew::styled_component, style};
+use wasm_bindgen::JsCast;
+use web_sys::{HtmlInputElement, HtmlFormElement};
 use yew::prelude::*;
 use yewdux::prelude::*;
 use rusty_money::{Money, iso};
@@ -48,6 +50,14 @@ pub struct MerchantPersistentState
 pub fn MerchantPortal(props: &Props) -> Html
 {
 	let token = use_store::<MerchantPersistentState>();
+	let boxed = style!(r#"
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		border-radius: 10px;
+		border: 1px solid #FFF;
+		"#).unwrap();
 	let stylesheet = style!(r#"
 
 		font-family: 'Bai Jamjuree', sans-serif;
@@ -200,8 +210,15 @@ pub fn MerchantPortal(props: &Props) -> Html
 			});
 		});
 	let diclone = discount_state.clone();
-	let on_sale_amount_change = Callback::from(move |input: String|
+
+	let token_clone = token.clone();
+	let show_disc_price = show_discounted_price_clone.clone();
+	let on_price_input = Callback::from(move |event: SubmitEvent|
 		{
+			event.prevent_default();
+			let target = event.target().unwrap();
+			let form = target.dyn_into::<HtmlFormElement>().unwrap();
+			let input = form.elements().named_item("amount").unwrap().dyn_into::<HtmlInputElement>().unwrap().value();
 			let input: String = input[1..].to_string();
 			let money = Money::from_str(&input, iso::USD).unwrap();
 			let with_discount = Money::from_decimal(
@@ -217,23 +234,16 @@ pub fn MerchantPortal(props: &Props) -> Html
 			{
 				money_str.push_str("0");
 			}
+
+			if money_str.is_empty() || money_str.len() < 2
+			{
+				return;
+			}
+
 			log!(format!("Money: {}", money_str));
 			price_input.set(money_str);
 			log!(format!("With discount: {}", with_discount_str));
 			diclone.set(with_discount_str);
-		});
-
-	let token_clone = token.clone();
-	let show_disc_price = show_discounted_price_clone.clone();
-	let pinclone = piclone.clone();
-	let on_price_input = Callback::from(move |event: SubmitEvent|
-		{
-			event.prevent_default();
-			let pinclone = pinclone.clone();
-			if (*pinclone).is_empty() || (*pinclone).len() < 2
-			{
-				return;
-			}
 			show_disc_price.set(true);
 		});
 	let on_sale_completion = Callback::from(move |event: SubmitEvent|
@@ -295,27 +305,29 @@ pub fn MerchantPortal(props: &Props) -> Html
 				if !*sale_alert_state_clone
 				{
 					<h1>{ "You'll be notified here when a customer scans your QR Code" }</h1>
-					<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
+					//<p>{ format!("Merchant UID: {}", props.merchant_uid) }</p>
 				}
 				else
 				{
-					<h1>{ format!("Pending Sale") }</h1>
-					<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
+					<div class={boxed}>
+						<h1>{ format!("Pending Sale From:") }</h1>
+						<h2>{ format!("{}", (&(*pending_sales_state_clone)[0].phone)) }</h2>
+					</div>
 					if !*show_discounted_price
 					{
 						<h2>{ format!("Input Full Sale Price") }</h2>
 						<div>
 							<form onsubmit={on_price_input}>
-								<SaleInput onchange={on_sale_amount_change} />
+								<SaleInput />
 								<Button title={"Continue"} />
 							</form>
 						</div>
 					}
 					else
 					{
-						<h2> { format!("Customer owes you {}", *discount_state) } </h2>
+						<h2> { format!("Customer Owes You {}", *discount_state) } </h2>
 						<form onsubmit={on_sale_completion}>
-							<Button title={"Complete Sale"}/>
+							<Button title={"Next Customer"}/>
 						</form>
 					}
 				}

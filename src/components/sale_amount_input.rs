@@ -7,7 +7,7 @@ use web_sys::HtmlInputElement;
 #[derive(Properties, PartialEq)]
 pub struct Props
 {
-	pub onchange: Callback<String>,
+	pub onchange: Option<Callback<String>>,
 }
 
 #[styled_component]
@@ -89,7 +89,10 @@ input::-webkit-inner-spin-button {
 				.unwrap()
 				.unchecked_into::<HtmlInputElement>()
 				.value();
-			onchange_callback.emit(value);
+			if onchange_callback.is_some()
+			{
+				onchange_callback.as_ref().unwrap().emit(value);
+			}
 		});
 
 	html!
@@ -100,8 +103,8 @@ input::-webkit-inner-spin-button {
 				onchange={onchange}
 				oninput={oninput}
 				oninvalid={oninvalid}
-				id="code"
-				name="code"
+				id="amount"
+				name="amount"
 				placeholder="$12.34"
 				value="$"
 				required=true
