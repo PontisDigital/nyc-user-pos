@@ -1,4 +1,4 @@
-use gloo::{console::log, net::http::Request};
+use gloo::net::http::Request;
 use serde_json::json;
 use yew::prelude::*;
 use yewdux::prelude::*;
@@ -43,12 +43,10 @@ pub fn UserPOSForm() -> Html
 		{
 			if !*cstate
 			{
-				log!(format!("phone changed to: {}", input));
 				pistate.set(input);
 			}
 			else
 			{
-				log!(format!("code changed to: {}", input));
 				cistate.set(input);
 			}
 		});
@@ -78,7 +76,6 @@ pub fn UserPOSForm() -> Html
 							{
 								"auth": {
 									"phone": *pistate,
-									"testing": true,
 								}
 							}
 						))
@@ -101,7 +98,6 @@ pub fn UserPOSForm() -> Html
 								"auth": {
 									"phone": *pistate,
 									"code": *cistate,
-									"testing": true,
 								}
 							}
 						))
@@ -117,8 +113,6 @@ pub fn UserPOSForm() -> Html
 							verify_response_clone.set(vfied.clone());
 							if vfied.verified
 							{
-								log!("verified");
-								log!(format!("{:?}", vfied));
 								dispatch.set(UserPersistentState {
 									token: Some(vfied.token),
 									phone: Some((*pistate).clone()),
