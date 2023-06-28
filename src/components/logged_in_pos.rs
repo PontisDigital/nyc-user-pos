@@ -25,6 +25,8 @@ pub fn LoggedInPOS(props: &Props) -> Html
 	let auth = use_store::<UserPersistentState>().0;
 
 	let submitted_state = use_state(|| false);
+	let someone_in_front = use_state(|| false);
+	let sif = someone_in_front.clone();
 
 	let center = style!(r#"
 		display: flex;
@@ -54,6 +56,7 @@ pub fn LoggedInPOS(props: &Props) -> Html
 		let merchant_uid = merchant_uid.clone();
 		let submitted_state = submitted_state_clone.clone();
 		let dclone = dispatch.clone();
+		let someone_in_front = someone_in_front.clone();
 		wasm_bindgen_futures::spawn_local(async move
 		{
 			let result = Request::post("https://api.rainyday.deals/sms-login")
@@ -73,11 +76,18 @@ pub fn LoggedInPOS(props: &Props) -> Html
 			let response = result.json::<RequestSent>().await.unwrap();
 			if response.error.is_some()
 			{
-				dclone.set(UserPersistentState
+				if response.error.unwrap() == "pending"
 				{
-					token: None,
-					phone: None,
-				});
+					someone_in_front.set(true);
+				}
+				else
+				{
+					dclone.set(UserPersistentState
+					{
+						token: None,
+						phone: None,
+					});
+				}
 			}
 			submitted_state.set(response.success);
 		});
@@ -92,7 +102,14 @@ pub fn LoggedInPOS(props: &Props) -> Html
 				{
 					<h1>
 					{
-						format!("Making a purchase at {}?", props.merchant.name)
+						if *sif
+						{
+							format!("Someone is in front of you at {}", props.merchant.name)
+						}
+						else
+						{
+							format!("Making a purchase at {}?", props.merchant.name)
+						}
 					}
 					</h1>
 				}
