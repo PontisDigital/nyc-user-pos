@@ -26,6 +26,10 @@ pub fn LoggedInPOS(props: &Props) -> Html
 
 	let submitted_state = use_state(|| false);
 
+	let center = style!(r#"
+		display: flex;
+		justify-content: center;
+		"#).unwrap();
 	let stylesheet: Style = style!(r#"
 
 		box-sizing: border-box;
@@ -114,6 +118,10 @@ pub fn LoggedInPOS(props: &Props) -> Html
 					<h1>
 						{format!("Purchase request sent to {}!", props.merchant.name)}
 					</h1>
+					<script src={"https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"}></script>
+					<div class={center}>
+						<lottie-player src={"https://assets3.lottiefiles.com/packages/lf20_SFdTxf9D07.json"}  background={"transparent"}  speed={"0.5"}  style={"width: 300px; height: 300px;"}  loop=false controls=false autoplay=true></lottie-player>
+					</div>
 				}
 				else
 				{
