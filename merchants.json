@@ -1,14 +1,17 @@
 {
 	"3dQYP5XMob0CHSc6OO1o": {
 		"name": "Greene Food Deli",
-		"uid": "3dQYP5XMob0CHSc6OO1o"
+		"uid": "3dQYP5XMob0CHSc6OO1o",
+		"use_phone": true
 	},
 	"eMLuzqOOo6lu5vW6nTJq": {
 		"name": "Greene Valley Market",
-		"uid": "eMLuzqOOo6lu5vW6nTJq"
+		"uid": "eMLuzqOOo6lu5vW6nTJq",
+		"use_phone": false
 	},
 	"chChrx8dKN8XHv60z6N6": {
 		"name": "Franklin Convenience",
-		"uid": "chChrx8dKN8XHv60z6N6"
+		"uid": "chChrx8dKN8XHv60z6N6",
+		"use_phone": true
 	}
 }
