@@ -4,7 +4,7 @@ use yew::prelude::*;
 use yewdux::prelude::*;
 use stylist::{yew::styled_component, style, Style};
 
-use crate::{pages::user_pos::{UserPersistentState, Merchant}, components::button::Button};
+use crate::{pages::user_pos::{UserPersistentState, Merchant}, components::{button::Button, user_price_form::UserPriceForm}};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 struct RequestSent
@@ -84,23 +84,43 @@ pub fn LoggedInPOS(props: &Props) -> Html
 		<div class = {stylesheet}>
 			if !*submitted_state
 			{
-				<h1>
+				if props.merchant.use_phone
 				{
-					format!("Making a purchase at {}?", props.merchant.name)
+					<h1>
+					{
+						format!("Making a purchase at {}?", props.merchant.name)
+					}
+					</h1>
 				}
-				</h1>
 
-				<form onsubmit={onsubmit}>
-					<Button title={"Save now"}/>
-				</form>
+				if !props.merchant.use_phone
+				{
+					<h1>
+						{format!("Input The Price For {}", props.merchant.name)}
+						<UserPriceForm merchant={props.merchant.clone()}/>
+					</h1>
+				}
+				else
+				{
+					<form onsubmit={onsubmit}>
+						<Button title={"Save now"}/>
+					</form>
+				}
 			}
 			else
 			{
-				<h1>
+				if props.merchant.use_phone
 				{
-					format!("Purchase request sent to {}!", props.merchant.name)
+					<h1>
+						{format!("Purchase request sent to {}!", props.merchant.name)}
+					</h1>
 				}
-				</h1>
+				else
+				{
+					<h1>
+						{format!("Purchase at {} complete!", props.merchant.name)}
+					</h1>
+				}
 			}
 		</div>
 	}

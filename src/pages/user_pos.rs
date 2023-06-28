@@ -19,6 +19,7 @@ pub struct Merchant
 {
 	pub uid: String,
 	pub name: String,
+	pub use_phone: bool,
 }
 
 #[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
@@ -88,7 +89,7 @@ pub fn UserPOS(props: &Properties) -> Html
 		"#).unwrap();
 
 	let has_loaded = use_state(|| false);
-	let merchant = use_state(|| Merchant { uid: props.merchant_uid.clone(), name: "Loading...".to_string() });
+	let merchant = use_state(|| Merchant { uid: props.merchant_uid.clone(), name: "Loading...".to_string(), use_phone: true});
 	let uid = props.merchant_uid.clone();
 	let callback = {
 		let state = merchant.clone();
