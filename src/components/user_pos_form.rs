@@ -1,8 +1,9 @@
 use gloo::net::http::Request;
 use serde_json::json;
+use web_sys::window;
 use yew::prelude::*;
 use yewdux::prelude::*;
-use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::UserPersistentState};
+use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::UserPersistentState, router::{switch, Route}};
 use stylist::{yew::styled_component, style, Style};
 
 #[derive(serde::Serialize, serde::Deserialize)]
@@ -127,6 +128,17 @@ pub fn UserPOSForm() -> Html
 			}
 		});
 
+	let center = style!(r#"
+		display: flex;
+		justify-content: center;
+		"#).unwrap();
+
+	let tohomepage = Callback::from(move |event: MouseEvent|
+		{
+			event.prevent_default();
+			window().unwrap().location().set_href("/").unwrap();
+		});
+
 	html!
 	{
 		<div class = {stylesheet}>
@@ -149,11 +161,15 @@ pub fn UserPOSForm() -> Html
 			}
 			else
 			{
-				<h1>{"Code verified!"}</h1>
-				<h2>{&verify_response.token}</h2>
+				<h1>{"Success!"}</h1>
+
+				<script src={"https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"}></script>
+				<div class={center}>
+					<lottie-player src={"https://assets3.lottiefiles.com/packages/lf20_SFdTxf9D07.json"}  background={"transparent"}  speed={"0.5"}  style={"width: 300px; height: 300px;"}  loop=false controls=false autoplay=true></lottie-player>
+				</div>
 
 				<form onsubmit={onsubmit}>
-					<Button title={"Confirm"}/>
+					<Button title={"Return to Homepage"} on_click={tohomepage}/>
 				</form>
 			}
 		}

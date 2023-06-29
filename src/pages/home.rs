@@ -1,7 +1,7 @@
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 
-use crate::components::button::Button;
+use crate::components::{button::Button, sign_in::SignIn};
 
 #[styled_component]
 pub fn Home() -> Html
@@ -74,9 +74,9 @@ pub fn Home() -> Html
 			letter-spacing: 0.1em;
 			position: absolute;
 			left: 50%;
-			top: 90%;
-			-webkit-transform: translate(-50%, -90%);
-			transform: translate(-50%, -90%);
+			top: 95%;
+			-webkit-transform: translate(-50%, -95%);
+			transform: translate(-50%, -95%);
 			& h2 {
 				font-size: 20px;
 			}
@@ -160,38 +160,72 @@ pub fn Home() -> Html
 			@media (max-width: 1024px) {
 				font-size: 2.25vw;
 				left: 50%;
-				top: 10%;
-				-webkit-transform: translate(-50%, -10%);
-				transform: translate(-50%, -10%);
+				top: 75%;
+				-webkit-transform: translate(-50%, -75%);
+				transform: translate(-50%, -75%);
 				white-space: nowrap;
 				& h1 {
 				}
 			}
 			"#).unwrap();
+	let signinformstyle = style!(r#"
+
+		font-family: 'Bai Jamjuree', sans-serif;
+		text-align: center;
+		height: 100vh;
+
+		@media (max-width: 1024px) {
+			font-size: 30px;
+		}
+
+		@media (max-width: 480px) {
+		}
+
+		@media (max-height: 1080px) {
+			height: 50vh;
+			font-size: 20px;
+		}
+		"#).unwrap();
+
+	let join_hit_state = use_state(|| false);
+	let jhs = join_hit_state.clone();
 	let joinbuttonpressed = Callback::from(move |event: SubmitEvent|
 		{
+			event.prevent_default();
+			jhs.set(true);
 		});
 	html!
 	{
 		<>
-			<div class={save_10}>
-				<h1>{ "SAVE AUTOMATICALLY WHEN YOU SHOP IN BED-STUY" }</h1>
-			</div>
 			<div class={image_in_back}>
 				<img src="img/logo.png" alt="logo"/> 
 			</div>
-			<div class={stylesheet}>
-				<h2>{ "GREENE FOOD DELI" }</h2>
-				<h2>{ "GREENE MARKET DELI" }</h2>
-				<h2>{ "FRANKLIN CONVENIENCE" }</h2>
-				<h2>{ "and more coming" }</h2>
-			</div>
-			<div class={signupstyle}>
-				<h2> { "One time sign up, instant savings" }</h2>
-				<form onsubmit={joinbuttonpressed}>
-					<Button title={"Join for Free"}/>
-				</form>
-			</div>
+			if !*join_hit_state
+			{
+				<div class={save_10}>
+					<h1>{ "SAVE WHEN YOU SHOP IN BED-STUY" }</h1>
+				</div>
+				<div class={stylesheet}>
+					<h2>{ "GREENE FOOD DELI" }</h2>
+					<h2>{ "GREENE MARKET DELI" }</h2>
+					<h2>{ "FRANKLIN CONVENIENCE" }</h2>
+					<h2>{ "and more coming" }</h2>
+				</div>
+				<div class={signupstyle}>
+					<h2> { "One time sign up, instant savings" }</h2>
+					<form onsubmit={joinbuttonpressed}>
+						<Button title={"Join for Free"}/>
+					</form>
+				</div>
+			}
+			else
+			{
+				<div class={signinformstyle}>
+					<h2>{ "Enter your phone number" }</h2>
+					<h2>{ "Start saving instantly" }</h2>
+					<SignIn />
+				</div>
+			}
 			<div class={thing_at_bottom}>
 				<p> { "rainyday" } </p>
 				<p> { "never pay full price again" } </p>
