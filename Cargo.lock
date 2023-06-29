@@ -536,6 +536,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "gtag-js-sys"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "92318b600e6f663517dd4c8044b9ecaf716d322384eb3a223d1ad3af9c037b7e"
+dependencies = [
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1259,6 +1268,7 @@ name = "user_pos_nyc"
 version = "0.1.0"
 dependencies = [
  "gloo",
+ "gtag-js-sys",
  "reqwasm",
  "rust_decimal",
  "rusty-money",

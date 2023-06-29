@@ -3,9 +3,12 @@ use std::collections::HashMap;
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
+use wasm_bindgen::JsValue;
 use web_sys::window;
 use yew::prelude::*;
 use yewdux::prelude::*;
+//use gloo::utils::format::JsValueSerdeExt;
+use gloo::utils::*;
 
 use crate::components::{user_pos_form::UserPOSForm, logged_in_pos::LoggedInPOS};
 
@@ -91,9 +94,6 @@ pub fn UserPOS(props: &Properties) -> Html
 
 	let has_loaded = use_state(|| false);
 	let merchant = use_state(|| Merchant { uid: props.merchant_uid.clone(), name: "Loading...".to_string(), use_phone: true});
-	let window = window().unwrap();
-	let doc = window.document().unwrap();
-	doc.set_title(format!("{}", merchant.name.clone()).as_str());
 	let uid = props.merchant_uid.clone();
 	let callback = {
 		let state = merchant.clone();
@@ -147,6 +147,13 @@ pub fn get_merchant_map(uid: String, callback: Callback<Merchant>)
 	wasm_bindgen_futures::spawn_local(async move
 		{
 			let merchant = get_merchant(uid.clone()).await;
+			let window = window().unwrap();
+			let doc = window.document().unwrap();
+			doc.set_title(format!("{}", merchant.name.clone()).as_str());
+			// Start Google Analytics Here //
+			//let dl = gtag_js_sys::DataLayer::new("pos_page_info".to_string());
+			let js_value = JsValue::from_serde::<Merchant>(&merchant).unwrap();
+			gtag_js_sys::gtag_with_parameters("event", "pos_page_load", &js_value);
 			callback.emit(merchant);
 		});
 }

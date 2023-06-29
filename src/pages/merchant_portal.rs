@@ -1,4 +1,4 @@
-use gloo::{net::http::Request, timers::callback::Timeout, console::log};
+use gloo::{net::http::Request, timers::callback::Timeout, console::log, utils::window};
 use rust_decimal::Decimal;
 use serde::{Serialize, Deserialize};
 use stylist::{yew::styled_component, style};
@@ -49,6 +49,9 @@ pub struct MerchantPersistentState
 #[styled_component]
 pub fn MerchantPortal(props: &Props) -> Html
 {
+	let window = window();
+	let doc = window.document().unwrap();
+	doc.set_title("Merchant Portal");
 	let token = use_store::<MerchantPersistentState>();
 	let boxed = style!(r#"
 		display: flex;

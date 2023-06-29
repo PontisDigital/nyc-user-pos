@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 yew = { vesion = "0.20.0", features = ["csr"] }
 gloo = "0.8.1"
+gtag-js-sys = "0.2.0"
 rust_decimal = "1.28"
 rusty-money = { version = "0.4.1", features = ["iso"]}
 serde = "1.0.164"
