@@ -100,18 +100,19 @@ pub fn LoggedInPOS(props: &Props) -> Html
 			{
 				if props.merchant.use_phone
 				{
-					<h1>
+					if *sif
 					{
-						if *sif
-						{
-							format!("Someone is in front of you at {}", props.merchant.name)
-						}
-						else
-						{
-							format!("Making a purchase at {}?", props.merchant.name)
-						}
+						<h1>
+						{format!("Someone is in front of you at {}", props.merchant.name)}
+						</h1>
+						<h1>{"Please wait until you're at the front of the line to hit the button"}</h1>
 					}
-					</h1>
+					else
+					{
+						<h1>
+						{format!("Making a purchase at {}?", props.merchant.name)}
+						</h1>
+					}
 				}
 
 				if !props.merchant.use_phone

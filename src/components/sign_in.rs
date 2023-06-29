@@ -6,15 +6,6 @@ use crate::components::user_pos_form::UserPOSForm;
 #[styled_component]
 pub fn SignIn() -> Html
 {
-	let message = style!(r#"
-		font-size: 48px;
-		font-weight: 400;
-		margin-top: 0px;
-		margin-bottom: 0px;
-		@media (max-height: 1080px) {
-			font-size: 30px;
-		}
-	"#).unwrap();
 
 	let stylesheet = style!(r#"
 

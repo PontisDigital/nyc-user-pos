@@ -3,7 +3,7 @@ use serde_json::json;
 use web_sys::window;
 use yew::prelude::*;
 use yewdux::prelude::*;
-use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::UserPersistentState, router::{switch, Route}};
+use crate::{components::{phone_number_input::PhoneInput, button::Button, verification_code_input::CodeInput}, pages::user_pos::UserPersistentState};
 use stylist::{yew::styled_component, style, Style};
 
 #[derive(serde::Serialize, serde::Deserialize)]

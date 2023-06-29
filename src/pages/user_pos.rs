@@ -7,8 +7,6 @@ use wasm_bindgen::JsValue;
 use web_sys::window;
 use yew::prelude::*;
 use yewdux::prelude::*;
-//use gloo::utils::format::JsValueSerdeExt;
-use gloo::utils::*;
 
 use crate::components::{user_pos_form::UserPOSForm, logged_in_pos::LoggedInPOS};
 
