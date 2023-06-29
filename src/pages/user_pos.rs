@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use stylist::{yew::styled_component, style};
+use web_sys::window;
 use yew::prelude::*;
 use yewdux::prelude::*;
 
@@ -90,6 +91,9 @@ pub fn UserPOS(props: &Properties) -> Html
 
 	let has_loaded = use_state(|| false);
 	let merchant = use_state(|| Merchant { uid: props.merchant_uid.clone(), name: "Loading...".to_string(), use_phone: true});
+	let window = window().unwrap();
+	let doc = window.document().unwrap();
+	doc.set_title(format!("{}", merchant.name.clone()).as_str());
 	let uid = props.merchant_uid.clone();
 	let callback = {
 		let state = merchant.clone();
