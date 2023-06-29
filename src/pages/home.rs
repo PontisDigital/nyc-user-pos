@@ -1,7 +1,8 @@
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
+use yewdux::prelude::use_store;
 
-use crate::components::{button::Button, sign_in::SignIn};
+use crate::{components::{button::Button, sign_in::SignIn}, pages::user_pos::UserPersistentState};
 
 #[styled_component]
 pub fn Home() -> Html
@@ -195,6 +196,8 @@ pub fn Home() -> Html
 			event.prevent_default();
 			jhs.set(true);
 		});
+
+	let auth = use_store::<UserPersistentState>().0;
 	html!
 	{
 		<>
@@ -214,9 +217,12 @@ pub fn Home() -> Html
 				</div>
 				<div class={signupstyle}>
 					<h2> { "One time sign up, instant savings" }</h2>
-					<form onsubmit={joinbuttonpressed}>
-						<Button title={"Join for Free"}/>
-					</form>
+					if auth.token.is_none()
+					{
+						<form onsubmit={joinbuttonpressed}>
+							<Button title={"Join for Free"}/>
+						</form>
+					}
 				</div>
 			}
 			else
