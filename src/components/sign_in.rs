@@ -12,6 +12,7 @@ pub fn SignIn() -> Html
 		font-family: 'Bai Jamjuree', sans-serif;
 		text-align: center;
 		height: 100vh;
+		z-index: 2;
 
 		@media (max-width: 1024px) {
 			font-size: 30px;

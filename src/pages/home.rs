@@ -8,6 +8,7 @@ pub fn Home() -> Html
 {
 	let image_in_back = style!(
 		r#"
+			z-index: -1;
 			position: absolute;
 			left: 50%;
 			top: 50%;
