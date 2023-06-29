@@ -9,11 +9,6 @@
 		"uid": "eMLuzqOOo6lu5vW6nTJq",
 		"use_phone": false
 	},
-	"chChrx8dKN8XHv60z6N6": {
-		"name": "Franklin Convenience",
-		"uid": "chChrx8dKN8XHv60z6N6",
-		"use_phone": true
-	},
 	"test": {
 		"name": "Test Merchant",
 		"uid": "test",

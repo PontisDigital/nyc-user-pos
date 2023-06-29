@@ -212,7 +212,6 @@ pub fn Home() -> Html
 				<div class={stylesheet}>
 					<h2>{ "GREENE FOOD DELI" }</h2>
 					<h2>{ "GREENE MARKET DELI" }</h2>
-					<h2>{ "FRANKLIN CONVENIENCE" }</h2>
 					<h2>{ "and more coming" }</h2>
 				</div>
 				<div class={signupstyle}>
