@@ -215,12 +215,16 @@ pub fn Home() -> Html
 					<h2>{ "and more coming" }</h2>
 				</div>
 				<div class={signupstyle}>
-					<h2> { "One time sign up, instant savings" }</h2>
 					if auth.token.is_none()
 					{
+						<h2> { "One time sign up, instant savings" }</h2>
 						<form onsubmit={joinbuttonpressed}>
 							<Button title={"Join for Free"}/>
 						</form>
+					}
+					else
+					{
+						<h2> { "You're registered - Savings are just one tap away at checkout" }</h2>
 					}
 				</div>
 			}

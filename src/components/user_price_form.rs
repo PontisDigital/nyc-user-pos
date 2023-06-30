@@ -4,7 +4,7 @@ use rusty_money::{Money, iso};
 use wasm_bindgen::JsCast;
 use web_sys::{HtmlFormElement, HtmlInputElement};
 use yew::prelude::*;
-use stylist::yew::styled_component;
+use stylist::{yew::styled_component, style};
 use yewdux::prelude::*;
 
 use crate::{components::{sale_amount_input::SaleInput, button::Button}, pages::user_pos::{UserPersistentState, Merchant}};
@@ -93,13 +93,20 @@ pub fn UserPriceForm(props: &Props) -> Html
 				}
 			});
 	});
+	let border = style!(r#"
+		margin-left: 100px;
+		margin-right: 100px;
+		margin-bottom: 48px;
+		"#).unwrap();
 	html!
 	(
 	<>
 		if !*purchase_complete
 		{
 			<form onsubmit={on_submit}>
-				<SaleInput />
+				<div class={border}>
+					<SaleInput />
+				</div>
 				<Button title="Submit" />
 			</form>
 		}

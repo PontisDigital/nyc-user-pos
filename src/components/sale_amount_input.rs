@@ -19,11 +19,11 @@ pub fn SaleInput(props: &Props) -> Html
   width: 100%;
   font-size: 5em;
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.7);
   color: #b3a8ff;
   padding-top: 20px;
   padding-bottom: 20px;
   display: block;
+  background-color: rgba(255,255,255,0.2);
   margin-top: 40px;
   margin-left: auto;
   margin-right: auto;
@@ -105,8 +105,7 @@ input::-webkit-inner-spin-button {
 				oninvalid={oninvalid}
 				id="amount"
 				name="amount"
-				placeholder="$12.34"
-				value="$"
+				placeholder="$0.00"
 				required=true
 				/>
 		</div>
