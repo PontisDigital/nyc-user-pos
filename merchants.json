@@ -2,7 +2,7 @@
 	"3dQYP5XMob0CHSc6OO1o": {
 		"name": "Greene Food Deli",
 		"uid": "3dQYP5XMob0CHSc6OO1o",
-		"use_phone": true
+		"use_phone": false
 	},
 	"eMLuzqOOo6lu5vW6nTJq": {
 		"name": "Greene Valley Market",
@@ -12,6 +12,21 @@
 	"test": {
 		"name": "Test Merchant",
 		"uid": "test",
-		"use_phone": true
+		"use_phone": false
+	},
+	"0fCpweFZ2ZAe1FkZcmGb": {
+		"name": "Placeholder Merchant 1",
+		"uid": "0fCpweFZ2ZAe1FkZcmGb",
+		"use_phone": false
+	},
+	"GhWYSZBX62tpZM14HGpl" : {
+		"name": "Placeholder Merchant 2",
+		"uid": "GhWYSZBX62tpZM14HGpl",
+		"use_phone": false
+	},
+	"XJx2xA6IfN4azmzsO1rp": {
+		"name": "Placeholder Merchant 3",
+		"uid": "XJx2xA6IfN4azmzsO1rp",
+		"use_phone": false
 	}
 }
