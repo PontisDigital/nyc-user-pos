@@ -159,7 +159,7 @@ pub fn UserPOSForm() -> Html
 			if !verify_response.verified
 			{
 				<h1>{"Enter the code we sent you"}</h1>
-				<form onsubmit={onsubmit}>
+				<form onsubmit={onsubmit} autocomplete={"off"}>
 					<CodeInput onchange={onchange}/>
 					<Button title={"Submit"} disabled={!*button_enabled}/>
 				</form>

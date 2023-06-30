@@ -120,7 +120,7 @@ pub fn UserPriceForm(props: &Props) -> Html
 			<h1>
 			{"Type in the price of your purchase"}
 			</h1>
-			<form onsubmit={on_submit}>
+			<form onsubmit={on_submit} autocomplete={"off"}>
 				<div class={border}>
 					<SaleInput />
 				</div>
