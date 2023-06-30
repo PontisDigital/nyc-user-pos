@@ -163,7 +163,7 @@ pub fn Home() -> Html
 				}
 			}
 			@media (max-width: 1024px) {
-				font-size: 1.25vw;
+				font-size: 1.75vw;
 				left: 50%;
 				top: 75%;
 				-webkit-transform: translate(-50%, -75%);
