@@ -76,9 +76,9 @@ pub fn Home() -> Html
 			letter-spacing: 0.1em;
 			position: absolute;
 			left: 50%;
-			top: 95%;
-			-webkit-transform: translate(-50%, -95%);
-			transform: translate(-50%, -95%);
+			top: 130%;
+			-webkit-transform: translate(-50%, -130%);
+			transform: translate(-50%, -130%);
 			& h2 {
 				font-size: 20px;
 			}
@@ -97,6 +97,9 @@ pub fn Home() -> Html
 					padding: 0;
 					letter-spacing: 0.1em;
 				}
+				top: 160%;
+				-webkit-transform: translate(-50%, -160%);
+				transform: translate(-50%, -160%);
 			}
 		"#
 		).unwrap();
@@ -189,6 +192,25 @@ pub fn Home() -> Html
 		}
 		"#).unwrap();
 
+	let steps = style!(r#"
+
+		font-family: 'Bai Jamjuree', sans-serif;
+		text-align: center;
+		top: 125%;
+		left: 50%;
+		-webkit-transform: translate(-50%, -125%);
+		transform: translate(-50%, -125%);
+		position: absolute;
+
+		@media (max-width: 1024px) {
+			font-size: 30px;
+			top: 170%;
+			-webkit-transform: translate(-50%, -170%);
+			transform: translate(-50%, -170%);
+		}
+
+		"#).unwrap();
+
 	let join_hit_state = use_state(|| false);
 	let jhs = join_hit_state.clone();
 	let joinbuttonpressed = Callback::from(move |event: SubmitEvent|
@@ -226,6 +248,13 @@ pub fn Home() -> Html
 					{
 						<h2> { "You're registered - Savings are just one tap away at checkout" }</h2>
 					}
+				</div>
+				<div class={steps}>
+					<h1>{"Steps to save"}</h1>
+					<h2>{"1. Join for free with just your phone number"}</h2>
+					<h2>{"2. Scan a QR code at a participating store"}</h2>
+					<h2>{"3. Enter the price the merchant is charging you"}</h2>
+					<h2>{"4. We bring the price down 10%"}</h2>
 				</div>
 			}
 			else
