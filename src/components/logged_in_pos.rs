@@ -117,10 +117,7 @@ pub fn LoggedInPOS(props: &Props) -> Html
 
 				if !props.merchant.use_phone
 				{
-					<h1>
-					{"Type in the price of your purchase"}
-					</h1>
-						<UserPriceForm merchant={props.merchant.clone()}/>
+					<UserPriceForm merchant={props.merchant.clone()}/>
 				}
 				else
 				{

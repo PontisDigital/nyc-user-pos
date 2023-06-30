@@ -108,11 +108,18 @@ pub fn UserPriceForm(props: &Props) -> Html
 		margin-right: 100px;
 		margin-bottom: 48px;
 		"#).unwrap();
+	let center = style!(r#"
+		display: flex;
+		justify-content: center;
+		"#).unwrap();
 	html!
 	(
 	<>
 		if !*purchase_complete
 		{
+			<h1>
+			{"Type in the price of your purchase"}
+			</h1>
 			<form onsubmit={on_submit}>
 				<div class={border}>
 					<SaleInput />
@@ -123,6 +130,10 @@ pub fn UserPriceForm(props: &Props) -> Html
 		else
 		{
 			<h1>{format!("You owe {} {}", props.merchant.name, *discount_state)}</h1>
+			<script src={"https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"}></script>
+			<div class={center}>
+				<lottie-player src={"https://assets3.lottiefiles.com/packages/lf20_SFdTxf9D07.json"}  background={"transparent"}  speed={"0.5"}  style={"width: 300px; height: 300px;"}  loop=false controls=false autoplay=true></lottie-player>
+			</div>
 		}
 	</>
 	)
