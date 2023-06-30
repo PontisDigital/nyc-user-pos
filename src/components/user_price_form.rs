@@ -33,11 +33,14 @@ pub fn UserPriceForm(props: &Props) -> Html
 	let ds = discount_state.clone();
 	let button_enabled = use_state(|| true);
 	let be = button_enabled.clone();
+	let savings = use_state(|| "".to_string());
+	let sv = savings.clone();
 	let on_submit = Callback::from(move |event: SubmitEvent|
 	{
 		event.prevent_default();
 
 		be.set(false);
+		let savings = sv.clone();
 		let discount_state = ds.clone();
 		let purchase_complete = pc.clone();
 		let merchant_uid = merchant_uid.clone();
@@ -57,7 +60,13 @@ pub fn UserPriceForm(props: &Props) -> Html
 		let with_discount = Money::from_decimal(
 			money.amount().checked_mul(Decimal::from_str_exact("0.9").unwrap()).unwrap()
 			, iso::USD);
+		let diff = money.clone() - with_discount.clone();
+		let mut diff_str: String = format!("{}", diff);
 		let mut with_discount_str: String = format!("{}", with_discount);
+		if diff_str.find(".").unwrap_or(diff_str.len()) == diff_str.len() - 2
+		{
+			diff_str.push_str("0");
+		}
 		if with_discount_str.find(".").unwrap_or(with_discount_str.len()) == with_discount_str.len() - 2
 		{
 			with_discount_str.push_str("0");
@@ -75,6 +84,8 @@ pub fn UserPriceForm(props: &Props) -> Html
 
 		log!(format!("Money: {}", money_str));
 		log!(format!("With discount: {}", with_discount_str));
+		log!(format!("Diff: {}", diff_str));
+		savings.set(diff_str);
 
 		wasm_bindgen_futures::spawn_local(async move
 			{
@@ -130,6 +141,7 @@ pub fn UserPriceForm(props: &Props) -> Html
 		else
 		{
 			<h1>{format!("You owe {} {}", props.merchant.name, *discount_state)}</h1>
+			<h2>{format!("Show this screen to the cashier to save {}", *savings)}</h2>
 			<script src={"https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"}></script>
 			<div class={center}>
 				<lottie-player src={"https://assets3.lottiefiles.com/packages/lf20_SFdTxf9D07.json"}  background={"transparent"}  speed={"0.5"}  style={"width: 300px; height: 300px;"}  loop=false controls=false autoplay=true></lottie-player>
