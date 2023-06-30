@@ -2,7 +2,7 @@ use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::{components::{button::Button, sign_in::SignIn}, pages::user_pos::UserPersistentState};
+use crate::{components::{button::Button, sign_in::SignIn, pixel_rain::PixelRain}, pages::user_pos::UserPersistentState};
 
 #[styled_component]
 pub fn Home() -> Html
@@ -15,7 +15,7 @@ pub fn Home() -> Html
 			top: 50%;
 			-webkit-transform: translate(-50%, -50%);
 			transform: translate(-50%, -50%);
-			opacity: 0.25;
+			opacity: 10.25;
 			& img {
 				width: 425px;
 				height: auto;
@@ -224,7 +224,8 @@ pub fn Home() -> Html
 	{
 		<>
 			<div class={image_in_back}>
-				<img src="img/logo.png" alt="logo"/> 
+				//<img src="img/logo.png" alt="logo"/> 
+				<PixelRain />
 			</div>
 			if !*join_hit_state
 			{

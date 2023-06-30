@@ -342,8 +342,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be4136b2a15dd319360be1c07d9933517ccf0be8f16bf62a3bee4f0d618df427"
 dependencies = [
  "cfg-if",
+ "js-sys",
  "libc",
  "wasi",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -1267,8 +1269,11 @@ checksum = "b15811caf2415fb889178633e7724bad2509101cde276048e013b9def5e51fa0"
 name = "user_pos_nyc"
 version = "0.1.0"
 dependencies = [
+ "getrandom",
  "gloo",
  "gtag-js-sys",
+ "js-sys",
+ "rand",
  "reqwasm",
  "rust_decimal",
  "rusty-money",
