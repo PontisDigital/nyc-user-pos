@@ -141,11 +141,11 @@ pub fn UserPriceForm(props: &Props) -> Html
 		else
 		{
 			<h1>{format!("You owe {} {}", props.merchant.name, *discount_state)}</h1>
-			<h2>{format!("Show this screen to the cashier to save {}", *savings)}</h2>
 			<script src={"https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"}></script>
 			<div class={center}>
 				<lottie-player src={"https://assets3.lottiefiles.com/packages/lf20_SFdTxf9D07.json"}  background={"transparent"}  speed={"0.5"}  style={"width: 300px; height: 300px;"}  loop=false controls=false autoplay=true></lottie-player>
 			</div>
+			<h1>{format!("Show this screen to the cashier to save {}", *savings)}</h1>
 		}
 	</>
 	)
