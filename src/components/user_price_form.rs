@@ -31,10 +31,13 @@ pub fn UserPriceForm(props: &Props) -> Html
 	let pc = purchase_complete.clone();
 	let discount_state = use_state(|| "".to_string());
 	let ds = discount_state.clone();
+	let button_enabled = use_state(|| true);
+	let be = button_enabled.clone();
 	let on_submit = Callback::from(move |event: SubmitEvent|
 	{
 		event.prevent_default();
 
+		be.set(false);
 		let discount_state = ds.clone();
 		let purchase_complete = pc.clone();
 		let merchant_uid = merchant_uid.clone();
@@ -114,7 +117,7 @@ pub fn UserPriceForm(props: &Props) -> Html
 				<div class={border}>
 					<SaleInput />
 				</div>
-				<Button title="Submit" />
+				<Button title="Submit" disabled={!*button_enabled}/>
 			</form>
 		}
 		else

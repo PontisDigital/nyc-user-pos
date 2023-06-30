@@ -34,6 +34,8 @@ pub fn UserPOSForm() -> Html
 
 	"#).unwrap();
 
+	let button_enabled = use_state(|| true);
+	let be = button_enabled.clone();
 	let phone_input_state = use_state(|| "".to_string());
 	let code_input_state = use_state(|| "".to_string());
 	let code_sent_state = use_state(|| false);
@@ -62,6 +64,8 @@ pub fn UserPOSForm() -> Html
 	let dispatch = dispatch.clone();
 	let onsubmit = Callback::from(move |event: SubmitEvent|
 		{
+			be.set(false);
+			let be = be.clone();
 			let dispatch = dispatch.clone();
 			event.prevent_default();
 			let pistate = pistate.clone();
@@ -86,6 +90,7 @@ pub fn UserPOSForm() -> Html
 						.unwrap();
 					let sent = response.json::<CodeSubmitResponse>().await.unwrap().sent;
 					sent_state.set(sent);
+					be.set(true);
 				})
 			}
 			else // dealing with verification code field
@@ -146,7 +151,7 @@ pub fn UserPOSForm() -> Html
 		{
 			<form onsubmit={onsubmit}>
 				<PhoneInput onchange={onchange}/>
-				<Button title={"Submit"}/>
+				<Button title={"Submit"} disabled={!*button_enabled}/>
 			</form>
 		}
 		else
@@ -156,7 +161,7 @@ pub fn UserPOSForm() -> Html
 				<h1>{"Enter the code we sent you"}</h1>
 				<form onsubmit={onsubmit}>
 					<CodeInput onchange={onchange}/>
-					<Button title={"Submit"}/>
+					<Button title={"Submit"} disabled={!*button_enabled}/>
 				</form>
 			}
 			else

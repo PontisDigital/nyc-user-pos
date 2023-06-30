@@ -6,6 +6,7 @@ pub struct Props
 {
   pub title: Option<String>,
   pub on_click: Option<Callback<MouseEvent>>,
+  pub disabled: Option<bool>,
 }
 
 #[styled_component]
@@ -46,8 +47,7 @@ touch-action: manipulation;
   transform: scale(1.05);
   @media (max-width: 1024px) {
     transform: translateY(0rem) scale(3.05);
-  }
-}
+  } }
 
 &:not(:disabled):hover:active {
   transform: scale(1.05) translateY(.125rem);
@@ -97,13 +97,13 @@ touch-action: manipulation;
     {
 	  if props.on_click.is_none()
 	  {
-        <button class={stylesheet}>
+        <button class={stylesheet} disabled={props.disabled.unwrap_or(false)}>
 		  {props.title.clone().unwrap_or("Submit".to_string())}
 		</button>
 	  }
 	  else
 	  {
-        <button class={stylesheet} onclick={props.on_click.as_ref().unwrap()}>
+        <button class={stylesheet} disabled={props.disabled.unwrap_or(false)} onclick={props.on_click.as_ref().unwrap()}>
 		  {props.title.clone().unwrap_or("Submit".to_string())}
 		</button>
 	  }
