@@ -42,7 +42,14 @@ pub fn UserPriceForm(props: &Props) -> Html
 		let target = event.target().unwrap();
 		let form = target.dyn_into::<HtmlFormElement>().unwrap();
 		let input = form.elements().named_item("amount").unwrap().dyn_into::<HtmlInputElement>().unwrap().value();
-		let input: String = input[1..].to_string();
+		let mut input: String = input[1..].to_string();
+		if input.find(".").is_some()
+		{
+			if input.find(".").unwrap() == 0
+			{
+				input.insert_str(0, "0");
+			}
+		}
 		let money = Money::from_str(&input, iso::USD).unwrap();
 		let with_discount = Money::from_decimal(
 			money.amount().checked_mul(Decimal::from_str_exact("0.9").unwrap()).unwrap()
