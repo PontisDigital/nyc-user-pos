@@ -99,7 +99,7 @@ input::-webkit-inner-spin-button {
 	{
 		<div class = {stylesheet}>
 			<input type="text"
-				inputmode="numeric"
+				inputmode="decimal"
 				onchange={onchange}
 				oninput={oninput}
 				oninvalid={oninvalid}
