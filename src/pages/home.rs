@@ -163,7 +163,7 @@ pub fn Home() -> Html
 				}
 			}
 			@media (max-width: 1024px) {
-				font-size: 2.25vw;
+				font-size: 1.25vw;
 				left: 50%;
 				top: 75%;
 				-webkit-transform: translate(-50%, -75%);
@@ -254,7 +254,7 @@ pub fn Home() -> Html
 					<h1>{"Steps to save"}</h1>
 					<h2>{"1. Join for free with just your phone number"}</h2>
 					<h2>{"2. Scan a QR code at a participating store"}</h2>
-					<h2>{"3. Enter the price the merchant is charging you"}</h2>
+					<h2>{"3. Enter the price the cashier is charging you"}</h2>
 					<h2>{"4. We bring the price down 10%"}</h2>
 				</div>
 			}
