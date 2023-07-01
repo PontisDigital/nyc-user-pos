@@ -240,7 +240,14 @@ impl Particle
 		let res = brightness_map.get(y).and_then(|row| row.get(x));
 		if res.is_some()
 		{
-			self.speed = res.unwrap().3;
+			if window().unwrap().inner_width().unwrap().unchecked_into_f64() < 1000.0
+			{
+				self.speed = res.unwrap().3 * 10.0;
+			}
+			else
+			{
+				self.speed = res.unwrap().3;
+			}
 		}
 		else
 		{
