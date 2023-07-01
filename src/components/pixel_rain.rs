@@ -241,14 +241,8 @@ impl Particle
 
 		if res.is_some()
 		{
-			if window().unwrap().inner_width().unwrap().unchecked_into_f64() < 1000.0
-			{
-				self.speed = res.unwrap().3 + 1.0;
-			}
-			else
-			{
-				self.speed = res.unwrap().3;
-			}
+			self.speed = res.unwrap().3;
+			self.speed = res.unwrap().3;
 		}
 		else
 		{
@@ -256,7 +250,7 @@ impl Particle
 		}
 		if self.speed < 0.2 && window().unwrap().inner_width().unwrap().unchecked_into_f64() < 1000.0
 		{
-			self.speed = 1.0;
+			self.speed = 0.1;
 		}
 		else if self.speed < 0.2
 		{
