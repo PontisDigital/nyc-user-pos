@@ -47,12 +47,14 @@ touch-action: manipulation;
   transform: scale(1.05);
   @media (max-width: 1024px) {
     transform: translateY(0rem) scale(3.05);
+    padding: .75rem 5rem;
   } }
 
 &:not(:disabled):hover:active {
   transform: scale(1.05) translateY(.125rem);
   @media (max-width: 1024px) {
     transform: translateY(.125rem) scale(3.05);
+    padding: .75rem 5rem;
   }
 }
 
@@ -78,6 +80,7 @@ touch-action: manipulation;
 &:not(:disabled):active {
   transform: translateY(.125rem);
   @media (max-width: 1024px) {
+    padding: .75rem 5rem;
     transform: translateY(3.125rem) scale(3);
   }
 }

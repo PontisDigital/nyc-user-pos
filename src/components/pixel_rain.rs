@@ -55,8 +55,8 @@ impl Component for PixelRain
 		{
 			Msg::FetchImageOk(image) => 
 			{
-				let width: usize = image.width() as usize;
-				let height: usize = image.height() as usize;
+				let width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as usize;
+				let height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as usize;
 				let canvas: HtmlCanvasElement = self.canvas.cast().unwrap();
 				canvas.set_width(width as u32);
 				canvas.set_height(height as u32);
@@ -68,6 +68,7 @@ impl Component for PixelRain
 					.unwrap()
 					.unchecked_into();
 				render_ctx.draw_image_with_image_bitmap(&image, 0.0, 0.0).unwrap();
+
 				let image_data = render_ctx.get_image_data(
 					0.0,
 					0.0,
@@ -77,20 +78,49 @@ impl Component for PixelRain
 
 				render_ctx.clear_rect(0.0, 0.0, width as f64, height as f64);
 				let buffer = (*image_data.data()).clone();
-
-				for y in 0usize..height
+				if width > 1000
 				{
-					let mut row = Vec::new();
-					row.reserve(width);
-					for x in 0usize..width
+					let offset = (width - 1000) / 2;
+					for y in 0usize..height
 					{
-						let red = buffer[(y * 4usize * width) + (x * 4)];
-						let green = buffer[(y * 4usize * width) + (x * 4) + 1];
-						let blue = buffer[(y * 4usize * width) + (x * 4) + 2];
-						let brightness = relative_brightness(red as f64, green as f64, blue as f64);
-						row.push((red,green,blue,brightness));
+						let mut row = Vec::new();
+						row.reserve(width);
+						for _x in 0usize..offset
+						{
+							row.push((0,0,0,0.0));
+						}
+						for x in 0..1000
+						{
+							let red = buffer[(y * 4usize * width) + (x * 4)];
+							let green = buffer[(y * 4usize * width) + (x * 4) + 1];
+							let blue = buffer[(y * 4usize * width) + (x * 4) + 2];
+							let brightness = relative_brightness(red as f64, green as f64, blue as f64);
+							row.push((red,green,blue,brightness));
+						}
+						for _x in 1000..width
+						{
+							row.push((0,0,0,0.0));
+						}
+						self.brightness_map.push(row);
 					}
-					self.brightness_map.push(row);
+				}
+				else
+				{
+					let offset = (1000 - width) / 2;
+					for y in 0usize..height
+					{
+						let mut row = Vec::new();
+						row.reserve(width);
+						for x in offset..width-offset
+						{
+							let red = buffer[(y * 4usize * width) + (x * 4)];
+							let green = buffer[(y * 4usize * width) + (x * 4) + 1];
+							let blue = buffer[(y * 4usize * width) + (x * 4) + 2];
+							let brightness = relative_brightness(red as f64, green as f64, blue as f64);
+							row.push((red,green,blue,brightness));
+						}
+						self.brightness_map.push(row);
+					}
 				}
 
 				ctx.link().send_message(Msg::Render);
@@ -184,7 +214,23 @@ impl Particle
 	{
 		let x: usize = self.x as usize;
 		let y: usize = self.y as usize;
-		self.speed = brightness_map[y][x].3;
+		let res = brightness_map.get(y).and_then(|row| row.get(x));
+		if res.is_some()
+		{
+			self.speed = res.unwrap().3;
+		}
+		else
+		{
+			self.speed = 0.0;
+		}
+		if self.speed < 0.2 && window().unwrap().inner_width().unwrap().unchecked_into_f64() < 1000.0
+		{
+			self.speed = 1.0;
+		}
+		else if self.speed < 0.2
+		{
+			self.speed = 0.5;
+		}
 		let delta_y = 3.0 -self.speed + self.velocity;
 		self.y += delta_y;
 		if self.y > self.max_height
