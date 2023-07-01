@@ -30,7 +30,6 @@ pub fn Home() -> Html
 
 		background-color: #000000;
 		color: #ffffff;
-		border: 3px solid red;
 		position: fixed;
 		top: 0;
 		left: 0;

@@ -162,7 +162,7 @@ impl Component for PixelRain
 
 	fn view(&self, ctx: &Context<Self>) -> Html
 	{
-		let canvas = style!("border: 3px solid green;").unwrap();
+		let canvas = style!("").unwrap();
 		html!
 		{
 			<div>
