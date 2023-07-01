@@ -189,7 +189,14 @@ impl PixelRain
 		ctx.set_global_alpha(0.05);
 		ctx.set_fill_style(&JsValue::from_str("black"));
 		ctx.fill_rect(0.0, 0.0, canvas.width() as f64, canvas.height() as f64);
-		ctx.set_global_alpha(0.2);
+		if window().unwrap().inner_width().unwrap().as_f64().unwrap() as usize > 1000
+		{
+			ctx.set_global_alpha(0.2);
+		}
+		else
+		{
+			ctx.set_global_alpha(0.05);
+		}
 		self.particles.iter_mut().for_each(|particle|
 			{
 				particle.update(&self.brightness_map);
