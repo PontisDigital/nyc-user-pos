@@ -25,16 +25,17 @@ pub fn Home() -> Html
 
 		"#).unwrap();
 
+
 	let background = style!(r#"
 
 		background-color: #000000;
 		color: #ffffff;
-		height: 100vm;
-		width: 100vw;
-		margin: 0 auto;
-		position: absolute;
+		border: 3px solid red;
+		position: fixed;
 		top: 0;
 		left: 0;
+		bottom: 0;
+		right: 0;
 		z-index: -1;
 
 		"#).unwrap();

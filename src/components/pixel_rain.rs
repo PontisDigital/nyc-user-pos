@@ -1,5 +1,6 @@
-use gloo::console::error;
+use gloo::{console::error, utils::document};
 use rand::{thread_rng, Rng};
+use stylist::style;
 use wasm_bindgen::{JsCast, JsValue, prelude::Closure};
 use wasm_bindgen_futures::JsFuture;
 use web_sys::{RequestInit, window, Request, Response, Blob, HtmlCanvasElement, ImageBitmap, CanvasRenderingContext2d};
@@ -18,6 +19,23 @@ pub struct PixelRain
 	particles: Vec<Particle>,
 	callback: Closure<dyn FnMut()>,
 	brightness_map: Vec<Vec<(u8, u8, u8, f64)>>,
+}
+
+fn max(bsh: i32, boh: i32, hch: i32, hsh: i32) -> usize
+{
+	let list = vec![bsh, boh, hch, hsh];
+
+	let mut max = 0;
+
+	for i in list
+	{
+		if i > max
+		{
+			max = i;
+		}
+	}
+
+	max as usize
 }
 
 impl Component for PixelRain
@@ -49,6 +67,7 @@ impl Component for PixelRain
 		}
 	}
 
+
 	fn update(&mut self, ctx: &Context<Self>, msg: Self::Message) -> bool
 	{
 		match msg
@@ -56,7 +75,9 @@ impl Component for PixelRain
 			Msg::FetchImageOk(image) => 
 			{
 				let width = window().unwrap().inner_width().unwrap().as_f64().unwrap() as usize;
-				let height = window().unwrap().inner_height().unwrap().as_f64().unwrap() as usize;
+				let body = document().body().unwrap();
+				let html = document().document_element().unwrap();
+				let height = max(body.scroll_height(), body.offset_height(), html.client_height(), html.scroll_height());
 				let canvas: HtmlCanvasElement = self.canvas.cast().unwrap();
 				canvas.set_width(width as u32);
 				canvas.set_height(height as u32);
@@ -141,10 +162,12 @@ impl Component for PixelRain
 
 	fn view(&self, ctx: &Context<Self>) -> Html
 	{
+		let canvas = style!("border: 3px solid green;").unwrap();
 		html!
 		{
 			<div>
 				<canvas
+					class={canvas}
 					id="canvas"
 					ref={self.canvas.clone()}
 				/>
