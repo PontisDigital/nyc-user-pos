@@ -19,6 +19,7 @@ pub fn Home() -> Html
 
 	let root = style!(r#"
 
+		position: relative;
 		margin: auto;
 		width: 100%;
 		text-align: center;
@@ -53,7 +54,7 @@ pub fn Home() -> Html
 	let delis = style!(r#"
 
 		font-family: 'Bai Jamjuree', sans-serif;
-		font-size: 10px;
+		font-size: 20px;
 		font-weight: bold;
 		margin-top: 20px;
 		margin-bottom: 20px;
@@ -77,14 +78,30 @@ pub fn Home() -> Html
 
 		"#).unwrap();
 	
-	let footer = style!(r#"
+	let footer_parent = style!(r#"
 
+		position: relative;
+		margin: auto;
+		width: 100%;
+		text-align: center;
+		justify-content: center;
 		font-family: 'Bai Jamjuree', sans-serif;
-		font-size: 20px;
+		font-size: 15px;
 		font-weight: bold;
 		margin-top: 40px;
 		margin-bottom: 20px;
 
+		@media (max-width: 1024px) {
+			margin-top: 80px;
+			padding-top: 80px;
+		}
+
+		"#).unwrap();
+	let footer = style!(r#"
+		position: relative;
+		bottom: 0px;
+		text-align: center;
+		justify-content: center;
 		"#).unwrap();
 
 	let sign_on_message = style!(r#"
@@ -156,9 +173,11 @@ pub fn Home() -> Html
 						<SignIn />
 					</div>
 				}
-				<div class = {footer}>
-					<p> { "rainyday" } </p>
-					<p> { "never pay full price again" } </p>
+				<div class = {footer_parent}>
+					<div class = {footer}>
+						<p> { "rainyday" } </p>
+						<p> { "never pay full price again" } </p>
+					</div>
 				</div>
 			</div>
 		</>
