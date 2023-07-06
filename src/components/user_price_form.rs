@@ -7,7 +7,7 @@ use yew::prelude::*;
 use stylist::{yew::styled_component, style};
 use yewdux::prelude::*;
 
-use crate::{components::{sale_amount_input::SaleInput, button::Button}, pages::user_pos::{UserPersistentState, Merchant}};
+use crate::{components::{sale_amount_input::SaleInput, button::Button}, pages::user_pos::{AnonUserPersistentState, Merchant}};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 struct RequestSent
@@ -25,7 +25,7 @@ pub struct Props
 #[styled_component]
 pub fn UserPriceForm(props: &Props) -> Html
 {
-	let user_data = use_store::<UserPersistentState>();
+	let user_data = use_store::<AnonUserPersistentState>();
 	let merchant_uid = props.merchant.uid.clone();
 	let purchase_complete = use_state(|| false);
 	let pc = purchase_complete.clone();
@@ -95,7 +95,7 @@ pub fn UserPriceForm(props: &Props) -> Html
 								"request_type": "user_submission",
 								"merchant_uid": merchant_uid,
 								"user_token": user_data.0.token.as_ref().unwrap().to_string(),
-								"user_phone": user_data.0.phone,
+								"user_phone": user_data.0.uid,
 								"price_of_sale": money_str,
 								"price_with_discount": with_discount_str,
 							}

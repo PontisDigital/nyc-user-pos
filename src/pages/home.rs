@@ -2,7 +2,7 @@ use stylist::{yew::styled_component, style};
 use yew::prelude::*;
 use yewdux::prelude::use_store;
 
-use crate::{components::{button::Button, sign_in::SignIn, pixel_rain::PixelRain}, pages::user_pos::UserPersistentState};
+use crate::{components::{button::Button, sign_in::SignIn, pixel_rain::PixelRain}, pages::user_pos::AnonUserPersistentState};
 
 #[styled_component]
 pub fn Home() -> Html
@@ -15,7 +15,7 @@ pub fn Home() -> Html
 			jhs.set(true);
 		});
 
-	let auth = use_store::<UserPersistentState>().0;
+	let auth = use_store::<AnonUserPersistentState>().0;
 
 	let root = style!(r#"
 

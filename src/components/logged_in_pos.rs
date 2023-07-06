@@ -4,7 +4,7 @@ use yew::prelude::*;
 use yewdux::prelude::*;
 use stylist::{yew::styled_component, style, Style};
 
-use crate::{pages::user_pos::{UserPersistentState, Merchant}, components::{button::Button, user_price_form::UserPriceForm}};
+use crate::{pages::user_pos::{AnonUserPersistentState, Merchant}, components::{button::Button, user_price_form::UserPriceForm}};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 struct RequestSent
@@ -22,7 +22,7 @@ pub struct Props
 #[styled_component]
 pub fn LoggedInPOS(props: &Props) -> Html
 {
-	let auth = use_store::<UserPersistentState>().0;
+	let auth = use_store::<AnonUserPersistentState>().0;
 
 	let submitted_state = use_state(|| false);
 	let someone_in_front = use_state(|| false);
@@ -41,13 +41,13 @@ pub fn LoggedInPOS(props: &Props) -> Html
 
 	"#).unwrap();
 
-	let phone = auth.phone.clone().unwrap();
+	let phone = auth.uid.clone().unwrap();
 	let token = auth.token.clone().unwrap();
 	let merchant_uid = props.merchant.uid.clone();
 
 	let submitted_state_clone = submitted_state.clone();
 
-	let dispatch = use_store::<UserPersistentState>().1;
+	let dispatch = use_store::<AnonUserPersistentState>().1;
 	let onsubmit = Callback::from(move |event: SubmitEvent|
 	{
 		event.prevent_default();
@@ -82,10 +82,10 @@ pub fn LoggedInPOS(props: &Props) -> Html
 				}
 				else
 				{
-					dclone.set(UserPersistentState
+					dclone.set(AnonUserPersistentState
 					{
 						token: None,
-						phone: None,
+						uid: None,
 					});
 				}
 			}

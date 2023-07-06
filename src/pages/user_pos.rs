@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
+use serde_json::json;
 use stylist::{yew::styled_component, style};
 use wasm_bindgen::JsValue;
 use web_sys::window;
@@ -26,16 +27,42 @@ pub struct Merchant
 
 #[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
 #[store(storage = "local", storage_tab_sync)]
-pub struct UserPersistentState
+pub struct AnonUserPersistentState
 {
 	pub token: Option<String>,
-	pub phone: Option<String>,
+	pub uid: Option<String>,
 }
 
 #[styled_component]
 pub fn UserPOS(props: &Properties) -> Html
 {
-	let auth = use_store::<UserPersistentState>().0;
+	let (auth, dispatch) = use_store::<AnonUserPersistentState>();
+	let request_made = use_state(|| false);
+
+	if auth.uid.is_none() || auth.token.is_none()
+	{
+		if !*request_made
+		{
+			request_made.set(true);
+			wasm_bindgen_futures::spawn_local(async move
+			{
+				let resp = gloo::net::http::Request::post("https://api.rainyday.deals/anon")
+					.json(&json!(
+							{
+								"give_auth": true,
+							}
+							))
+					.unwrap()
+					.send()
+					.await
+					.unwrap()
+					.json::<AnonUserPersistentState>()
+					.await
+					.unwrap();
+				dispatch.set(resp);
+			});
+		}
+	}
 
 	let heading = style!(r#"
 
@@ -116,10 +143,8 @@ pub fn UserPOS(props: &Properties) -> Html
 				if auth.token.is_none()
 				{
 					<div class={message}>
-						<h2>{ "Enter phone number" }</h2>
-						<h2>{ "Start saving now" }</h2>
+						<h2>{ "Loading..." }</h2>
 					</div>
-					<UserPOSForm />
 				}
 				else
 				{
