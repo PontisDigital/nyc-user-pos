@@ -1,8 +1,24 @@
+use gloo::net::http::Request;
+use serde_json::json;
 use stylist::{yew::styled_component, style};
 use yew::prelude::*;
-use yewdux::prelude::use_store;
+use yewdux::prelude::*;
+use serde::{Deserialize, Serialize};
 
 use crate::{components::{button::Button, sign_in::SignIn, pixel_rain::PixelRain}, pages::user_pos::AnonUserPersistentState};
+
+#[derive(Default, PartialEq, Serialize, Deserialize, Store, Debug)]
+#[store(storage = "local", storage_tab_sync)]
+pub struct CppOnboardingDay
+{
+	pub token: Option<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct CppResponse
+{
+	pub token: String,
+}
 
 #[styled_component]
 pub fn Home() -> Html
