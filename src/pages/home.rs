@@ -31,7 +31,7 @@ pub fn Home() -> Html
         wasm_bindgen_futures::spawn_local(async move
         {
             let response = Request::post("https://api.rainyday.deals/cpp_onboard")
-                .json(&json!({}))
+                .json(&json!({"message": "new_user",}))
                 .unwrap()
                 .send()
                 .await
