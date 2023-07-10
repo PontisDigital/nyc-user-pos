@@ -148,9 +148,11 @@ pub fn Home() -> Html
 						if auth.token.is_none()
 						{
 							<h2> { "One time sign up, instant savings" }</h2>
+								/*
 							<form onsubmit={joinbuttonpressed}>
 								<Button title={"Join for Free"}/>
 							</form>
+								*/
 						}
 						else
 						{

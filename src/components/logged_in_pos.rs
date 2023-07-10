@@ -59,11 +59,11 @@ pub fn LoggedInPOS(props: &Props) -> Html
 		let someone_in_front = someone_in_front.clone();
 		wasm_bindgen_futures::spawn_local(async move
 		{
-			let result = Request::post("https://api.rainyday.deals/sms-login")
+			let result = Request::post("https://api.rainyday.deals/anon")
 				.json(&json!(
 				{
 					"purchase_req": {
-					  "phone": phone,
+					  "user_uid": phone,
 					  "token": token,
 					  "merchant_uid": merchant_uid
 					}
