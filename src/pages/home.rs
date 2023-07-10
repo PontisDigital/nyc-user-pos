@@ -61,6 +61,10 @@ pub fn Home() -> Html
 
 		"#).unwrap();
 
+	let step_img = style!(r#"
+		width: 50%;
+		height: auto;
+	"#).unwrap();
 	let steps = style!(r#"
 
 		font-family: 'Bai Jamjuree', sans-serif;
@@ -147,7 +151,7 @@ pub fn Home() -> Html
 					<div class={sign_on_message}>
 						if auth.token.is_none()
 						{
-							<h2> { "One time sign up, instant savings" }</h2>
+							//<h2> { "One time sign up, instant savings" }</h2>
 								/*
 							<form onsubmit={joinbuttonpressed}>
 								<Button title={"Join for Free"}/>
@@ -156,15 +160,17 @@ pub fn Home() -> Html
 						}
 						else
 						{
-							<h2> { "You're registered - Savings are just one tap away at checkout" }</h2>
+							//<h2> { "You're registered - Savings are just one tap away at checkout" }</h2>
 						}
 					</div>
 					<div class = {steps}>
 						<h1>{"Steps to save"}</h1>
-						<h2>{"1. Join for free with just your phone number"}</h2>
-						<h2>{"2. Scan a QR code at a participating store"}</h2>
-						<h2>{"3. Enter the price the cashier is charging you"}</h2>
-						<h2>{"4. We bring the price down 10%"}</h2>
+						<h2>{"1. Scan a QR code at a participating store"}</h2>
+						<img class = {step_img.clone()} src="img/step1.png" alt="step1"/> 
+						<h2>{"2. Enter the price the cashier is charging you"}</h2>
+						<img class = {step_img.clone()} src="img/step2.png" alt="step2"/> 
+						<h2>{"3. We bring the price down 10%"}</h2>
+						<img class = {step_img.clone()} src="img/step3.png" alt="step3"/> 
 					</div>
 				}
 				else

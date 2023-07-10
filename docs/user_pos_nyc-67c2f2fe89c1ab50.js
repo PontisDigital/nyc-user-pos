@@ -1159,24 +1159,24 @@ function __wbg_get_imports() {
         const ret = wasm.memory;
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper934 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 464, __wbg_adapter_42);
+    imports.wbg.__wbindgen_closure_wrapper930 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 460, __wbg_adapter_42);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper936 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 464, __wbg_adapter_45);
+    imports.wbg.__wbindgen_closure_wrapper932 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 460, __wbg_adapter_45);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper1763 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 865, __wbg_adapter_48);
+    imports.wbg.__wbindgen_closure_wrapper1759 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 861, __wbg_adapter_48);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper2171 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 1005, __wbg_adapter_51);
+    imports.wbg.__wbindgen_closure_wrapper2167 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 1001, __wbg_adapter_51);
         return addHeapObject(ret);
     };
-    imports.wbg.__wbindgen_closure_wrapper2231 = function(arg0, arg1, arg2) {
-        const ret = makeMutClosure(arg0, arg1, 1035, __wbg_adapter_54);
+    imports.wbg.__wbindgen_closure_wrapper2227 = function(arg0, arg1, arg2) {
+        const ret = makeMutClosure(arg0, arg1, 1031, __wbg_adapter_54);
         return addHeapObject(ret);
     };
 
@@ -1219,7 +1219,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('user_pos_nyc-dedf08af88d20944_bg.wasm', import.meta.url);
+        input = new URL('user_pos_nyc-67c2f2fe89c1ab50_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
