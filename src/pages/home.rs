@@ -62,12 +62,12 @@ pub fn Home() -> Html
 		"#).unwrap();
 
 	let step_img = style!(r#"
-		width: 25%;
+		width: 35%;
 		height: auto;
 		border: 5px solid #30F0CE;
 		@media (max-width: 1024px)
 		{
-			width: 50%;
+			width: 60%;
 		}
 	"#).unwrap();
 	let steps = style!(r#"
