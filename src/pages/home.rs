@@ -64,6 +64,7 @@ pub fn Home() -> Html
 	let step_img = style!(r#"
 		width: 25%;
 		height: auto;
+		border: 5px solid #30F0CE;
 		@media (max-width: 1024px)
 		{
 			width: 50%;
@@ -170,7 +171,9 @@ pub fn Home() -> Html
 					<div class = {steps}>
 						<h1>{"Steps to save"}</h1>
 						<h2>{"1. Scan a QR code at a participating store"}</h2>
-						<img class = {step_img.clone()} src="img/step1.png" alt="step1"/> 
+						//<div class={img_border}>
+							<img class = {step_img.clone()} src="img/step1.png" alt="step1"/> 
+						//</div>
 						<h2>{"2. Enter the price the cashier is charging you"}</h2>
 						<img class = {step_img.clone()} src="img/step2.png" alt="step2"/> 
 						<h2>{"3. We bring the price down 10%"}</h2>
